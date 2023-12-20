@@ -12,7 +12,7 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://orm.drizzle.team",
+  site: "https://tento.drizzle.team",
   build: {
     format: "file", // mandatory due to CloudFlare Pages trailing slash problem
   },
