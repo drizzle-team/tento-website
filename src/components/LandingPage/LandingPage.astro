@@ -16,8 +16,25 @@ import Showcase from "./Showcase.mdx";
     <div class="landing__name-meaning">
       Tento [店頭] means "shop" in Japanese
     </div>
-    <a href="/docs/overview" class="landing__documentation-btn">Documentation</a
-    >
+    <a href="/docs/overview" class="landing__documentation-btn"
+      ><div>Documentation</div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="feather feather-arrow-right"
+        data-astro-cid-iirlvvjs=""
+        ><line x1="5" y1="12" x2="19" y2="12" data-astro-cid-iirlvvjs=""
+        ></line><polyline points="12 5 19 12 12 19" data-astro-cid-iirlvvjs=""
+        ></polyline></svg
+      >
+    </a>
   </div>
   <Showcase />
 </div>
@@ -62,8 +79,8 @@ import Showcase from "./Showcase.mdx";
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 40px;
-    padding: 100px 0 160px;
+    gap: 72px;
+    padding: 100px 0;
   }
   .landing__wrap {
     display: flex;
@@ -82,7 +99,7 @@ import Showcase from "./Showcase.mdx";
     margin-left: 4px;
     font-size: 32px;
     font-weight: 700;
-    color: rgb(226, 232, 240);
+    color: #e2e8f0;
   }
 
   .landing__shop-emoji {
@@ -93,9 +110,9 @@ import Showcase from "./Showcase.mdx";
   .landing__description {
     width: 100%;
     font-size: 20px;
-    margin-top: 16px;
+    margin-top: 8px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: #e2e8f0;
   }
 
   .landing__name-meaning {
@@ -114,11 +131,16 @@ import Showcase from "./Showcase.mdx";
     justify-content: center;
     line-height: 1;
     width: 212px;
-    background-color: #282b3b;
-    border: none;
     border-radius: 3px;
-    color: #fff;
     font-weight: 700;
     height: 48px;
+    background-color: #161e23;
+    color: #b0b6c2;
+    border: 1px solid #2c3c47;
+  }
+  .landing__documentation-btn svg {
+    margin-left: 10px;
+    width: 16px;
+    height: 16px;
   }
 </style>
