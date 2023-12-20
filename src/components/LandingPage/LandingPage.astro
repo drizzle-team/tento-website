@@ -1,0 +1,124 @@
+---
+import { Image } from "astro:assets";
+import ShopEmoji from "@/assets/images/shop_emoji.png";
+import Showcase from "./Showcase.mdx";
+---
+
+<div class="wrap">
+  <div class="landing__wrap">
+    <div class="landing__title-wrap">
+      <Image class="landing__shop-emoji" src={ShopEmoji} alt="Shop emoji" />
+      <div class="landing__title">Tento</div>
+    </div>
+    <div class="landing__description">
+      Shopify data framework for NodeJS and TypeScript
+    </div>
+    <div class="landing__name-meaning">
+      Tento [店頭] means "shop" in Japanese
+    </div>
+    <a href="/docs/overview" class="landing__documentation-btn">Documentation</a
+    >
+  </div>
+  <Showcase />
+</div>
+<script is:inline>
+  const codeBlocks = document.querySelectorAll(".code");
+  codeBlocks.forEach((codeBlock) => {
+    Array.from(codeBlock.children).forEach((child, index) => {
+      child.classList.toggle("hidden", index !== 0);
+    });
+  });
+
+  document
+    .querySelectorAll("[data-change-bigcode-tab-btn]")
+    .forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const target = e.target;
+        const parent = target.parentElement;
+        const index = Array.from(parent?.children || []).indexOf(target);
+        const code = parent.nextElementSibling;
+
+        if (code) {
+          Array.from(code.children).forEach((child, codeIndex) => {
+            child.classList.toggle("hidden", codeIndex !== index);
+          });
+        }
+        Array.from(parent.children).forEach((child, codeIndex) => {
+          child.classList.toggle("bigcodetabs_tab", codeIndex !== index);
+          child.classList.toggle(
+            "bigcodetabs_tab--active",
+            codeIndex === index,
+          );
+        });
+      });
+    });
+</script>
+
+<style>
+  .wrap {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 40px;
+    padding: 100px 0 160px;
+  }
+  .landing__wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .landing__title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .landing__title {
+    margin-left: 4px;
+    font-size: 32px;
+    font-weight: 700;
+    color: rgb(226, 232, 240);
+  }
+
+  .landing__shop-emoji {
+    width: 36px;
+    height: 36px;
+  }
+
+  .landing__description {
+    width: 100%;
+    font-size: 20px;
+    margin-top: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .landing__name-meaning {
+    margin-top: 4px;
+    font-size: 14px;
+    color: #999;
+  }
+
+  .landing__documentation-btn {
+    margin-top: 40px;
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    justify-content: center;
+    line-height: 1;
+    width: 212px;
+    background-color: #282b3b;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    font-weight: 700;
+    height: 48px;
+  }
+</style>

@@ -1,0 +1,77 @@
+<style is:global>
+  .bigcodetabs_wrapper {
+    margin-top: 1.5rem;
+    width: 100%;
+  }
+
+  .bigcodetabs_wrapper pre {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .bigcodetabs_wrapper figure {
+    margin-top: 0;
+  }
+
+  .bigcodetabs_tabs {
+    margin: auto;
+    display: flex;
+    max-width: 768px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 40px;
+  }
+
+  html[class~="dark"] .bigcodetabs_tab,
+  html[class~="dark"] .bigcodetabs_tab--active {
+    background-color: #161e23;
+    color: #b0b6c2;
+    border: 1px solid #2c3c47;
+  }
+
+  .bigcodetabs_tab,
+  .bigcodetabs_tab--active {
+    cursor: pointer;
+    border-radius: 0.5rem;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    background-color: #eaf0fa;
+    color: #374152;
+    border: 1px solid #eaf0fa;
+  }
+
+  html[class~="dark"] .bigcodetabs_tab--active {
+    color: #ffffff;
+  }
+
+  .bigcodetabs_tab--active {
+    border: 1px solid #9bb8e7;
+  }
+
+  .bigcodetab_wrapper > figure {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .bigcodetab_wrapper > figure > pre {
+    border-radius: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .bigcodetab_wrapper > figure:last-child > pre {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+  }
+
+  .bigcodetab_wrapper > figure:not(:last-child) {
+    border-bottom: 1px solid #e0e8f6;
+  }
+
+  html[class~="dark"] .bigcodetab_wrapper > figure:not(:last-child) {
+    border-bottom: 1px solid #2e3e49;
+  }
+</style>

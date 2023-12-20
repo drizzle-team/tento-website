@@ -1,0 +1,73 @@
+### Queries
+
+Tento supports all Shopify Metaobject API methods:
+
+`.list()`
+
+```ts
+tento.metaobjects.designers.list({
+  query: {
+    $raw: 'state:disabled AND ("sale shopper" OR VIP)',
+  },
+});
+
+tento.metaobjects.designers.list({
+  query: ["Bob", "Norman"],
+});
+
+tento.metaobjects.designers.list({
+  query: {
+    displayName: {
+      $raw: "Bob Norman",
+    },
+  },
+});
+
+tento.metaobjects.designers.list({
+  query: {
+    displayName: "Bob Norman",
+    updatedAt: new Date("2023-01-01"),
+  },
+});
+
+tento.metaobjects.designers.list({
+  query: {
+    updatedAt: {
+      $gte: new Date("2023-01-01"),
+      $lte: new Date("2024-01-01"),
+    },
+  },
+});
+
+tento.metaobjects.designers.list({
+  query: {
+    displayName: {
+      $not: "bob",
+    },
+  },
+});
+
+tento.metaobjects.designers.list({
+  query: [{ $or: ["bob", "norman"] }, "Shopify"],
+});
+
+tento.metaobjects.designers.list({
+  query: [{ displayName: "Bob" }, { $or: ["sale shopper", "VIP"] }],
+});
+
+tento.metaobjects.designers.list({
+  query: {
+    displayName: "Bob Norman",
+  },
+});
+
+tento.metaobjects.designers.list({
+  query: "norm*",
+});
+
+tento.metaobjects.designers.list({
+  query: {
+    displayName: "norm*",
+  },
+});
+```
