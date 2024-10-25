@@ -1,0 +1,88 @@
+---
+import type { IHeading, TreeNode } from '@/types';
+import SidebarContentWrap from './components/SidebarContentWrap.astro';
+import ThemeSelectorMobile from './components/ThemeSelectorMobile.astro';
+import AsideSocials from './components/AsideSocials.astro';
+
+
+
+interface Props {
+  tree: TreeNode[];
+  headings: IHeading[];
+  forLanding?: boolean;
+  customSlug?: string;
+}
+
+const { slug } = Astro.params;
+const { tree, headings, forLanding, customSlug } = Astro.props;
+---
+
+<div class="aside invisible" id="aside">
+  <div class="aside-content aside-scroll scrollbar">
+    <SidebarContentWrap filteredHeadings={headings} slug={customSlug || slug} tree={tree} forLanding={forLanding} />
+    <ThemeSelectorMobile />
+    <!-- <AsideSocials /> -->
+  </div>
+</div>
+<script src="./docs-sidebar/index.ts"/>
+<style is:global>
+  html[class~="dark"] .aside {
+    border-right: 1px solid #303030;
+  }
+
+  .aside {
+    border-right: 1px solid #efefef;
+    display: flex;
+    flex-direction: column;
+    position: static;
+    width: 240px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    box-shadow:
+      rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+      rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+      rgba(0, 0, 0, 0.02) 0px 2px 4px 0px,
+      rgba(0, 0, 0, 0.06) 1px 0px 0px 0px;
+    mask-image: linear-gradient(
+      to bottom,
+      #000,
+      #000 calc(100% - 20px),
+      transparent
+    );
+      pointer-events: all;
+  }
+
+  .aside-scroll {
+    height: calc(100dvh - 64px);
+    padding: 0 16px 80px 0;
+    overscroll-behavior: contain;
+  }
+
+  @media screen and (max-width: 768px) {
+    html.dark .aside {
+      background: #111;
+      border-right: none;
+    }
+
+    .aside {
+      z-index: 100;
+      position: fixed;
+      top: 64px;
+      height: calc(100% - 64px);
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: #fff;
+      mask-image: none;
+      border-right: none;
+    }
+
+    .aside .logo-wrap {
+      display: none;
+    }
+
+    .aside-scroll {
+      padding: 0 16px 0 16px;
+    }
+  }
+</style>

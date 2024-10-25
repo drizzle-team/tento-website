@@ -1,0 +1,197 @@
+import BigCodeTabs from "@mdx/BigCodeTabs.astro";
+
+<BigCodeTabs
+  items={[
+    "Declare schema",
+    "Shopify clients",
+    "Fetch client",
+    "Runtime migrations",
+    "Schema pull",
+    "Schema push",
+    "OAuth",
+    "Queries filter",
+  ]}
+>
+{/* Declare schema */}
+```ts
+import { metaobject } from '@drizzle-team/tento';
+
+export const designers = metaobject({
+  name: 'Designer',
+  type: 'designer',
+  fieldDefinitions: (f) => ({
+    fullName: f.singleLineTextField({
+      name: 'Full Name',
+      required: true,
+      validations: (v) => [v.min(5), v.max(100)],
+    }),
+    description: f.singleLineTextField({
+      name: 'Description',
+      required: true,
+      validations: (v) => [v.min(5), v.max(300)],
+    }),
+    link: f.url(({
+      name: 'Link',
+      validations: (v) => [v.allowedDomains(["github.com"])],
+    }),
+  }),
+});
+```
+{/* Shopify clients */}
+```ts
+~ npx tento push
+
+- Updated metaobject definition "ORM"
+✅ All changes applied
+```
+{/* Fetch client */}
+```ts
+import { metaobject } from '@drizzle-team/tento';
+
+export const designers = metaobject({
+  name: 'Designer',
+  type: 'designer',
+  fieldDefinitions: (f) => ({
+    fullName: f.singleLineTextField({
+      name: 'Full Name',
+      required: true,
+      validations: (v) => [v.min(5), v.max(100)],
+    }),
+    description: f.singleLineTextField({
+      name: 'Description',
+      required: true,
+      validations: (v) => [v.min(5), v.max(300)],
+    }),
+    link: f.url(({
+      name: 'Link',
+      validations: (v) => [v.allowedDomains(["github.com"])],
+    }),
+  }),
+});
+```
+{/* Schema pull */}
+```ts
+import { metaobject } from '@drizzle-team/tento';
+
+export const designers = metaobject({
+  name: 'Designer',
+  type: 'designer',
+  fieldDefinitions: (f) => ({
+    fullName: f.singleLineTextField({
+      name: 'Full Name',
+      required: true,
+      validations: (v) => [v.min(5), v.max(100)],
+    }),
+    description: f.singleLineTextField({
+      name: 'Description',
+      required: true,
+      validations: (v) => [v.min(5), v.max(300)],
+    }),
+    link: f.url(({
+      name: 'Link',
+      validations: (v) => [v.allowedDomains(["github.com"])],
+    }),
+  }),
+});
+```
+{/* Schema push */}
+```ts
+import { metaobject } from '@drizzle-team/tento';
+
+export const designers = metaobject({
+  name: 'Designer',
+  type: 'designer',
+  fieldDefinitions: (f) => ({
+    fullName: f.singleLineTextField({
+      name: 'Full Name',
+      required: true,
+      validations: (v) => [v.min(5), v.max(100)],
+    }),
+    description: f.singleLineTextField({
+      name: 'Description',
+      required: true,
+      validations: (v) => [v.min(5), v.max(300)],
+    }),
+    link: f.url(({
+      name: 'Link',
+      validations: (v) => [v.allowedDomains(["github.com"])],
+    }),
+  }),
+});
+```
+{/* Runtime migrations */}
+```ts
+import { metaobject } from '@drizzle-team/tento';
+
+export const designers = metaobject({
+  name: 'Designer',
+  type: 'designer',
+  fieldDefinitions: (f) => ({
+    fullName: f.singleLineTextField({
+      name: 'Full Name',
+      required: true,
+      validations: (v) => [v.min(5), v.max(100)],
+    }),
+    description: f.singleLineTextField({
+      name: 'Description',
+      required: true,
+      validations: (v) => [v.min(5), v.max(300)],
+    }),
+    link: f.url(({
+      name: 'Link',
+      validations: (v) => [v.allowedDomains(["github.com"])],
+    }),
+  }),
+});
+```
+{/* OAuth */}
+```ts
+import { metaobject } from '@drizzle-team/tento';
+
+export const designers = metaobject({
+  name: 'Designer',
+  type: 'designer',
+  fieldDefinitions: (f) => ({
+    fullName: f.singleLineTextField({
+      name: 'Full Name',
+      required: true,
+      validations: (v) => [v.min(5), v.max(100)],
+    }),
+    description: f.singleLineTextField({
+      name: 'Description',
+      required: true,
+      validations: (v) => [v.min(5), v.max(300)],
+    }),
+    link: f.url(({
+      name: 'Link',
+      validations: (v) => [v.allowedDomains(["github.com"])],
+    }),
+  }),
+});
+```
+{/* Queries filter */}
+```ts
+import { metaobject } from '@drizzle-team/tento';
+
+export const designers = metaobject({
+  name: 'Designer',
+  type: 'designer',
+  fieldDefinitions: (f) => ({
+    fullName: f.singleLineTextField({
+      name: 'Full Name',
+      required: true,
+      validations: (v) => [v.min(5), v.max(100)],
+    }),
+    description: f.singleLineTextField({
+      name: 'Description',
+      required: true,
+      validations: (v) => [v.min(5), v.max(300)],
+    }),
+    link: f.url(({
+      name: 'Link',
+      validations: (v) => [v.allowedDomains(["github.com"])],
+    }),
+  }),
+});
+```
+</BigCodeTabs>

@@ -1,43 +1,43 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection } from 'astro:content';
 
-import Link from "@components/markdown/Link.astro";
-import MDXLayout from "../layouts/MDXLayout.astro";
+import Link from '@mdx/Link.astro';
+
+import DocsLayout from '@/ui/DocsLayout.astro';
+import CustomHeader from '@/ui/components/CustomHeader.astro';
 
 export async function getStaticPaths() {
-  const metaFiles = await import.meta.glob("../content/**/*.json");
+  const metaFiles = await import.meta.glob('../content/**/*.json');
   const slugs: string[] = [];
-  const regex = /\.\.\/content\/documentation\/(.*?)\/_meta\.json/;
-
-  for (const meta in metaFiles) {
-    const { default: parsed } = (await metaFiles[meta]()) as any;
+  const regex = /\.\.\/content\/(.*?)\/_meta\.json/;
+  
+  for(const meta in metaFiles) {
+    const {default: parsed} = await metaFiles[meta]() as any;
 
     const metaSlug = meta.match(regex);
     if (metaSlug) {
       const extractedText = metaSlug[1];
-      const parsedKeys = Object.keys(parsed);
-      parsedKeys.forEach((key) => {
-        if (typeof parsed[key] === "string") {
-          slugs.push(`${extractedText}/${key}`);
+      parsed.forEach((key) => {
+        if(Array.isArray(key)) {
+          slugs.push(`${extractedText}/${key[0]}`);
         }
-      });
+      })
     }
   }
-
-  const blogEntries = await getCollection("documentation", (entry) => {
-    return slugs.includes(entry.slug);
+  const blogEntries = await getCollection("docs", (entry) => {
+    return slugs.includes(`docs/${entry.slug}`);
   });
-  return blogEntries.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry, frontmatter: entry.data },
+  return blogEntries.map(entry => ({
+    params: { slug: `docs/${entry.slug}` }, props: { entry, frontmatter: entry.data },
   }));
 }
 
 const { entry, frontmatter } = Astro.props;
 
 const { Content, headings } = await entry.render();
----
 
-<MDXLayout title={entry.data.title} headings={headings}>
+---
+<DocsLayout customTitle={entry.data.title} description={frontmatter.description} headings={headings}>
+  {frontmatter?.title && <CustomHeader>{frontmatter.title}</CustomHeader>}
   <Content components={{ a: Link }} />
-</MDXLayout>
+</DocsLayout>

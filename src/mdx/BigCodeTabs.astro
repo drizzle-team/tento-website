@@ -1,0 +1,67 @@
+---
+import {parse} from "node-html-parser";
+
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+let slot = await Astro.slots.render('default');
+const parsedHtml = parse(slot);
+
+parsedHtml.childNodes.forEach((tabContent, index) => {
+  if (index !== 0) tabContent.classList.add('hidden');
+});
+---
+
+<div class="bigcodetabs_wrapper">
+  <div class="bigcodetabs_tabs">
+    {
+      items.map((item, index) => (
+        <div
+          class={index === 0 ? "bigcodetabs_tab--active" : "bigcodetabs_tab"}
+          data-change-bigcode-tab-btn
+        >
+          {item}
+        </div>
+      ))
+    }
+  </div>
+  <div class="code bigcodetabs_codeBlock">
+    <Fragment set:html={parsedHtml.toString()} />
+  </div>
+</div>
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const codeBlocks = document.querySelectorAll(".code");
+    codeBlocks.forEach((codeBlock) => {
+      Array.from(codeBlock.children).forEach((child, index) => {
+        child.classList.toggle("hidden", index !== 0);
+      });
+    });
+
+    document
+      .querySelectorAll("[data-change-bigcode-tab-btn]")
+      .forEach((button) => {
+        button.addEventListener("click", (e) => {
+          const target = e.target as Element;
+          const parent = target.parentElement as Element;
+          const index = Array.from(parent?.children || []).indexOf(target);
+          const code = parent.nextElementSibling as Element;
+
+          if (code) {
+            Array.from(code.children).forEach((child, codeIndex) => {
+              child.classList.toggle("hidden", codeIndex !== index);
+            });
+          }
+          Array.from(parent.children).forEach((child, codeIndex) => {
+            child.classList.toggle("bigcodetabs_tab", codeIndex !== index);
+            child.classList.toggle(
+              "bigcodetabs_tab--active",
+              codeIndex === index,
+            );
+          });
+        });
+      });
+  });
+</script>

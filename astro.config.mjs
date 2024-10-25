@@ -2,32 +2,35 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import AutoImport from "astro-auto-import";
 import react from "@astrojs/react";
-import {
-  astroCodeSnippets,
-  codeSnippetAutoImport,
-} from "./integration/astro-code-snippets";
 import sitemap from "@astrojs/sitemap";
+import {
+  codeSnippetTransformer,
+} from './src/transformers';
+import {
+  transformerNotationDiff,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
+  transformerNotationFocus,
+  transformerNotationErrorLevel,
+  transformerMetaHighlight,
+  transformerMetaWordHighlight,
+} from '@shikijs/transformers';
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://tento.drizzle.team",
+  site: import.meta.env.DEV ? "http://localhost:4321" : "https://tento.drizzle.team",
   build: {
     format: "file", // mandatory due to CloudFlare Pages trailing slash problem
   },
   image: {
     domains: ["img.youtube.com"],
   },
-  prefetch: {
+  prefetch: import.meta.env.DEV ? undefined : {
     prefetchAll: true,
     defaultStrategy: "viewport",
   },
   integrations: [
-    AutoImport({
-      imports: [codeSnippetAutoImport],
-    }),
-    astroCodeSnippets(),
     mdx(),
     react({
       experimentalReactChildren: true,
@@ -46,11 +49,22 @@ export default defineConfig({
             ariaHidden: true,
             tabIndex: -1,
           },
+          test: ['h2', 'h3', 'h4', 'h5'],
         },
       ],
     ],
     shikiConfig: {
       theme: "css-variables",
+      transformers: [
+        codeSnippetTransformer(),
+        transformerNotationDiff(),
+        transformerNotationHighlight(),
+        transformerNotationWordHighlight(),
+        transformerNotationFocus(),
+        transformerNotationErrorLevel(),
+        transformerMetaHighlight(),
+        transformerMetaWordHighlight(),
+      ]
     },
   },
   shikiConfig: {

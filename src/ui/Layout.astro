@@ -1,0 +1,86 @@
+---
+import BaseHead from "./BaseHead.astro";
+import GlobalStyles from "./components/GlobalStyles.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <BaseHead title={title} />
+  <GlobalStyles />
+  <body class="banner-shown">
+    <main class="landing-wrap scrollbar">
+      <div class="landing-content">
+        <slot />
+      </div>
+      <div class="bottom-margin"></div>
+    </main>
+    <script>
+      document.addEventListener("astro:page-load", () => {
+        const copyBtn = document.querySelectorAll(
+          "[data-copy-btn]",
+        ) as NodeListOf<HTMLElement>;
+        copyBtn.forEach((n) => {
+          n.addEventListener("click", () => {
+            let timeouts: NodeJS.Timeout[] = [];
+
+            if (timeouts.length) {
+              timeouts.forEach((id) => {
+                clearTimeout(id);
+              });
+            }
+
+            navigator.clipboard.writeText(n.dataset.code!);
+
+            n.classList.add("copied");
+            n.classList.add("hide-svg");
+            timeouts.push(
+              setTimeout(() => {
+                n.classList.remove("copied");
+              }, 1500),
+            );
+            timeouts.push(
+              setTimeout(() => {
+                n.classList.remove("hide-svg");
+              }, 2000),
+            );
+          });
+        });
+      });
+    </script>
+    <style>
+      .landing-wrap {
+        width: 100%;
+        overflow-x: hidden;
+        overflow-wrap: break-word;
+        padding-left: max(env(safe-area-inset-left), 1.5rem);
+        padding-right: max(env(safe-area-inset-right), 1.5rem);
+        color: #334155;
+      }
+
+      .landing-content {
+        margin: 0 auto;
+        max-width: 728px;
+      }
+
+      .aside-wrap {
+          display: none;
+      }
+
+      .bottom-margin {
+        margin-bottom: 4rem;
+      }
+
+      @media screen and (max-width: 768px) {
+          .aside-wrap {
+              display: block;
+          }
+      }
+    </style>
+  </body>
+</html>
