@@ -1,5 +1,6 @@
 [
   "Meet Tento",
+  ["components", "Components"],
   ["overview", "Overview"],
   ["migrations", "Migrations"],
   ["queries", "Queries"]

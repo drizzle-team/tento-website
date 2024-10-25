@@ -1291,20 +1291,18 @@
     margin-bottom: 40px;
   }
 
-  html[class~="dark"] .bigcodetabs_tab,
+  html[class~="dark"] .bigcodetabs_tab:hover,
+  html[class~="dark"] .bigcodetabs_tab--active:hover,
   html[class~="dark"] .bigcodetabs_tab--active {
-    background-color: #161e23;
-    color: #b0b6c2;
+    background-color: #282828;
+    color: rgb(225, 227, 230);
   }
 
-  html[class~="dark"] .bigcodetabs_tab--active {
-    background-color: #1f2a31;
+  html[class~="dark"] .bigcodetabs_tab {
+    background-color: #1c1c1c;
+    color: rgb(225, 227, 230);
   }
 
-  html.dark .bigcodetabs_tab:hover,
-  html[class~="dark"] .bigcodetabs_tab--active:hover {
-    background-color: #27363f;
-  }
 
   .bigcodetabs_tab,
   .bigcodetabs_tab--active {
@@ -1314,8 +1312,15 @@
     padding-right: 20px;
     padding-top: 7px;
     padding-bottom: 7px;
-    background-color: #eaf0fa;
-    color: #374152;
+    background-color: #f6f6f7;
+    color: rgb(34, 34, 34);
+  }
+
+  .bigcodetabs_tab:hover,
+  .bigcodetabs_tab--active:hover,
+  .bigcodetabs_tab--active {
+    background-color: #eff0f3;
+    color: rgb(34, 34, 34);
   }
 
   .bigcodetab_wrapper > figure {

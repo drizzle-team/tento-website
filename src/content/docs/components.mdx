@@ -1,0 +1,450 @@
+import Npm from "@mdx/Npm.astro";
+import Npx from "@mdx/Npx.astro";
+import NpxCompact from "@mdx/NpxCompact.astro";
+import AnchorCards from "@mdx/AnchorCards.astro";
+import Button from "@mdx/Button.astro";
+import Dialects from "@mdx/Dialects.mdx";
+import Prerequisites from "@mdx/Prerequisites.astro";
+import Flex from "@mdx/Flex.astro"
+import LinksList from "@mdx/LinksList.astro"
+import Drivers from "@mdx/Drivers.mdx";
+import Callout from "@mdx/Callout.astro";
+import CodeTabs from "@mdx/CodeTabs.astro";
+import CodeTab from "@mdx/CodeTab.astro";
+import IsSupportedChipGroup from "@mdx/IsSupportedChipGroup.astro";
+import Section from "@mdx/Section.astro";
+import Tabs from "@mdx/Tabs.astro";
+import Tab from "@mdx/Tab.astro";
+import SimpleLinkCards from "@mdx/SimpleLinkCards.astro";
+import Steps from "@mdx/Steps.astro";
+import YoutubeCards from "@mdx/YoutubeCards.astro";
+import Tag from "@mdx/Tag.astro";
+
+# Marddown
+
+[MDX](https://mdxjs.com "title")
+
+> A greater than…
+
+A backslash\
+before a line break…
+
+Some `backticks` for inline.
+
+```javascript
+backtick.fences('for blocks')
+```
+
+
+```plaintext 
+const test = 1;
+```
+
+```ts {3}
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+const test4 = 4;
+```
+
+```ts filename="index.ts"
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+```
+
+```ts {3} collapsable
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+const test4 = 4;
+
+
+
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+const test4 = 4;
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+const test4 = 4;
+
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+const test4 = 4;
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+const test4 = 4;
+const test = 1;
+const test2 = 2;
+const test3 = 3;
+const test4 = 4;
+```
+
+Some *asterisks* for emphasis.
+
+# One number sign…
+
+## Two number signs…
+
+### Three number signs…
+
+#### Four number signs…
+
+##### Five number signs…
+
+###### Six number signs…
+
+Three asterisks for a thematic break:
+
+***
+
+* asterisks for unordered items
+
+1. decimals and a dot for ordered items
+
+Just some text…
+
+Two **asterisks** for strong.
+
+## Npm
+
+<Npm>drizzle-orm</Npm>
+
+<Npm>drizzle-orm -D drizzle-kit</Npm>
+
+## Npx
+
+<Npx>
+  tsx src/index.ts
+</Npx>
+
+## NpxCompact
+
+<NpxCompact>
+  tsx src/index.ts
+</NpxCompact>
+
+## AnchorCards
+
+<AnchorCards
+  cards={{
+    Anchor1: "#anchor1",
+    Anchor2: "#anchor2",
+    Anchor3: "#anchor3",
+    Anchor4: "#anchor4",
+  }}
+/>
+
+## Button
+
+<Button href={"/"} value={"Main page"} />
+<Button href={"/"} value={"Main page"} />
+
+## Callout
+
+<Callout>Callout example</Callout>
+
+<Callout type={"warning"}>Callout example</Callout>
+
+<Callout type={"error"}>Callout example</Callout>
+
+<Callout collapsed="How it works under the hood?">
+```text nocopy
+┌───────────────────────────┐                 ┌─────────────────────────────┐              
+│       Drizzle ORM         │                 │  HTTP Server with Database  │             
+└─┬─────────────────────────┘                 └─────────────────────────┬───┘             
+  │                                                ^                    │
+  │-- 1. Build query         2. Send built query --│                    │
+  │                                                │                    │
+  │              ┌───────────────────────────┐     │                    │
+  └─────────────>│                           │─────┘                    │ 
+                 │      HTTP Proxy Driver    │                          │
+  ┌──────────────│                           │<─────────────┬───────────┘
+  │              └───────────────────────────┘              │
+  │                                                  3. Execute a query + send raw results back
+  │-- 4. Map data and return        
+  │                   
+  v
+```
+</Callout>
+
+
+
+## Dialects
+
+<Dialects/>
+
+## Drivers
+
+<Drivers/>
+
+## Tag
+
+<Tag style="font-size: 12px">**Option 1**</Tag>
+
+## Prerequisites
+
+<Prerequisites>
+- Database [connection basics](/docs/connect-overview) with Drizzle
+- AWS Data API - [website](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html)
+- AWS SDK - [website](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-rds-data/)
+</Prerequisites>
+
+## Flex with LinksList
+
+<Flex>
+  <LinksList 
+    title='Manage schema'
+    links={[
+        ["Drizzle Schema", "/docs/sql-schema-declaration"], 
+        ["PostgreSQL data types", "/docs/column-types/pg"], 
+        ["Indexes and Constraints", "/docs/indexes-constraints"],
+        ["Database Views", "/docs/views"],
+        ["Database Schemas", "/docs/schemas"],
+        ["Sequences", "/docs/sequences"],
+        ["Extensions", "/docs/extensions/pg"],
+      ]}
+  />
+  <LinksList 
+    title='Query data'
+    links={[
+        ["Relational Queries", "/docs/rqb"], 
+        ["Select", "/docs/select"], 
+        ["Insert", "/docs/insert"],
+        ["Update", "/docs/update"],
+        ["Delete", "/docs/delete"],
+        ["Filters", "/docs/operators"],
+        ["Joins", "/docs/joins"],
+        ["sql`` operator", "/docs/sql"],
+      ]}
+  />
+</Flex>
+
+## CodeTabs with CodeTab
+
+<CodeTabs items={["index.ts", "schema.ts"]}>
+	<CodeTab>
+	```typescript copy /schema/3
+	import * as schema from './schema';
+	import { drizzle } from 'drizzle-orm/...';
+
+    const db = drizzle(client, { schema });
+
+    const result = await db.query.users.findMany({
+    	with: {
+    		posts: true
+    	},
+    });
+    ```
+
+    ```ts
+    [{
+    	id: 10,
+    	name: "Dan",
+    	posts: [
+    		{
+    			id: 1,
+    			content: "SQL is awesome",
+    			authorId: 10,
+    		},
+    		{
+    			id: 2,
+    			content: "But check relational queries",
+    			authorId: 10,
+    		}
+    	]
+    }]
+    ```
+    </CodeTab>
+
+    ```typescript copy
+    import { integer, serial, text, pgTable } from 'drizzle-orm/pg-core';
+    import { relations } from 'drizzle-orm';
+
+    export const users = pgTable('users', {
+    	id: serial('id').primaryKey(),
+    	name: text('name').notNull(),
+    });
+
+    export const usersRelations = relations(users, ({ many }) => ({
+    	posts: many(posts),
+    }));
+
+    export const posts = pgTable('posts', {
+    	id: serial('id').primaryKey(),
+    	content: text('content').notNull(),
+    	authorId: integer('author_id').notNull(),
+    });
+
+    export const postsRelations = relations(posts, ({ one }) => ({
+    	author: one(users, { fields: [posts.authorId], references: [users.id] }),
+    }));
+    ```
+
+</CodeTabs>
+
+## IsSupportedChipGroup
+
+<IsSupportedChipGroup
+  chips={{ PostgreSQL: true, SQLite: true, MySQL: false }}
+/>
+
+## Section
+
+For codeblocks connection
+
+<Section>
+```typescript
+import { sql } from "drizzle-orm";
+import { integer, sqliteTable } from "drizzle-orm/sqlite-core";
+
+const table = sqliteTable('table', {
+int1: integer('int1').default(42),
+int2: integer('int2').default(sql`(abs(42))`)
+});
+
+```
+```sql
+CREATE TABLE `table` (
+  `int1` integer DEFAULT 42
+  `int2` integer DEFAULT (abs(42))
+);
+```
+
+</Section>
+
+## Tabs with Tab and Section
+
+<Tabs items={['PostgreSQL', 'MySQL', 'SQLite']}>
+  <Tab>
+    <Section>
+    ```typescript
+    import { sql } from "drizzle-orm";
+    import { integer, uuid, pgTable } from "drizzle-orm/pg-core";
+
+    const table = pgTable('table', {
+      integer1: integer('integer1').default(42),
+      integer2: integer('integer2').default(sql`'42'::integer`),
+      uuid1: uuid('uuid1').defaultRandom(),
+      uuid2: uuid('uuid2').default(sql`gen_random_uuid()`),
+    });
+    ```
+
+    ```sql
+    CREATE TABLE IF NOT EXISTS "table" (
+      "integer1" integer DEFAULT 42,
+      "integer2" integer DEFAULT '42'::integer,
+      "uuid1" uuid DEFAULT gen_random_uuid(),
+      "uuid2" uuid DEFAULT gen_random_uuid()
+    );
+    ```
+    </Section>
+
+  </Tab> 
+  <Tab>
+    <Section>
+    ```typescript
+    import { sql } from "drizzle-orm";
+    import { int, time, mysqlTable } from "drizzle-orm/mysql-core";
+    
+    const table = mysqlTable("table", {
+      int: int("int").default(42),
+      time: time("time").default(sql`cast("14:06:10" AS TIME)`),
+    });
+    ```
+    ```sql
+    CREATE TABLE `table` (
+      `int` int DEFAULT 42,
+      `time` time DEFAULT cast("14:06:10" AS TIME)
+    );
+    ```
+    </Section>
+  </Tab>
+  <Tab>
+    <Section>
+    ```typescript
+    import { sql } from "drizzle-orm";
+    import { integer, sqliteTable } from "drizzle-orm/sqlite-core";
+
+    const table = sqliteTable('table', {
+      int1: integer('int1').default(42),
+      int2: integer('int2').default(sql`(abs(42))`)
+    });
+
+    ```
+    ```sql
+    CREATE TABLE `table` (
+      `int1` integer DEFAULT 42
+      `int2` integer DEFAULT (abs(42))
+    );
+    ```
+    </Section>
+  </Tab>
+</Tabs>
+
+## SimpleLinkCards
+
+<SimpleLinkCards
+  cards={{
+    "PostgreSQL column types": "/docs/column-types/pg",
+    "MySQL column types": "/docs/column-types/mysql",
+    "SQLite column types": "/docs/column-types/sqlite",
+  }}
+/>
+
+## Steps
+
+With h4 headers
+
+<Steps>
+
+#### Install babel plugin
+
+It's necessary to bundle SQL migration files as string directly to your bundle.
+
+```shell
+npm install babel-plugin-inline-import
+```
+
+#### Update config files.
+
+You will need to update `babel.config.js`, `metro.config.js` and `drizzle.config.ts` files
+
+```js filename='babel.config.js'
+module.exports = function (api) {
+  api.cache(true);
+
+  return {
+    presets: ["babel-preset-expo"],
+    plugins: [["inline-import", { extensions: [".sql"] }]], // <-- add this
+  };
+};
+```
+</Steps>
+
+## YoutubeCards
+
+<YoutubeCards cards={[
+	{
+		id: "4ZhtoOFKFP8",
+		title: "Easiest Database Setup in Next.js&nbsp;14 with Turso&nbsp;&&nbsp;Drizzle",
+		description: "Sam Meech-Ward",
+		time: '38:08'
+	}, 
+	{
+		id: "NfVELsEZFsA",
+		title: "Next.js Project with Vercel, Neon, Drizzle, TailwindCSS, FlowBite and more!",
+		description: "CodingEntrepreneurs",
+		time: '5:46:28'
+	}, 
+	{
+		id: "_SLxGYzv6jo",
+		title: "I Have A New Favorite Database&nbsp;Tool",
+		description: "Theo - t3.gg",
+		time: '5:46'
+	}
+]}/>

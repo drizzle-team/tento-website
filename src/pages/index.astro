@@ -44,6 +44,17 @@ import Showcase from "@/content/landing/showcase.mdx";
   
   </script>
   <style>
+    html[class~="dark"] .landing__title {
+      color: #e2e8f0;
+    }
+    html[class~="dark"] .landing__description {
+      color: #e2e8f0;
+    }
+
+    html[class~="dark"] .landing__name-meaning {
+      color: #999;
+    }
+
     .wrap {
       width: 100%;
       height: fit-content;
@@ -71,7 +82,6 @@ import Showcase from "@/content/landing/showcase.mdx";
       margin-left: 4px;
       font-size: 32px;
       font-weight: 700;
-      color: #e2e8f0;
     }
 
     .landing__shop-emoji {
@@ -84,34 +94,38 @@ import Showcase from "@/content/landing/showcase.mdx";
       font-size: 20px;
       margin-top: 8px;
       font-weight: 600;
-      color: #e2e8f0;
     }
 
     .landing__name-meaning {
       margin-top: 4px;
       font-size: 14px;
-      color: #999;
+      color: #727272;
+    }
+
+    html[class~="dark"] .landing__documentation-btn {
+      background-color: #e2e8f0;
+      color: #282828;
     }
 
     .landing__documentation-btn {
       margin-top: 40px;
-      align-items: center;
+      width: 212px;
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      height: 48px;
       cursor: pointer;
       display: flex;
       flex-direction: row;
-      font-size: 16px;
+      align-items: center;
       justify-content: center;
-      line-height: 1;
-      width: 212px;
-      border-radius: 4px;
-      font-weight: 700;
-      height: 48px;
-      background-color: #161e23;
-      color: #b0b6c2;
-      border: 1px solid #2c3c47;
+      border: none;
+      background-color: #282b3b;
+      gap: 10px;
     }
     .landing__documentation-btn svg {
-      margin-left: 10px;
       width: 16px;
       height: 16px;
     }
