@@ -262,7 +262,7 @@ let i = 0;
 </div>
 <script>
   import throttle from "lodash.throttle";
-  import {handleAnchorHighlighting, updateDialectLinks} from "@/utils";
+  import handleAnchorHighlighting from "@/utils/handleAnchorHighlighting";
 
   document.addEventListener("astro:after-swap", () => {
     let expandedSections: string[] = JSON.parse(localStorage.getItem('expandedSections'));
@@ -348,7 +348,5 @@ let i = 0;
       document.addEventListener("scroll", throttle(updateLinks, 80));
       updateLinks();
     }
-
-    updateDialectLinks();
   });
 </script>

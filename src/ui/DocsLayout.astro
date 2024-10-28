@@ -30,8 +30,8 @@ const { tree, filteredHeadings, title } = await getContentTree({
     title={`Tento - ${customTitle || title}`}
     description={description}
   />
-  <GlobalStyles />
   <body class="banner-shown">
+    <GlobalStyles />
     <MDXStyles />
     <Header />
     <div class="fixed-container">
@@ -402,18 +402,6 @@ const { tree, filteredHeadings, title } = await getContentTree({
         });
       });
     </script>
-    <script>
-      class RemElement extends HTMLElement {
-        constructor() {
-          super();
-        }
-      }
-
-      // Регистрация нового элемента
-      customElements.define("rem", RemElement);
-      customElements.define("rem025", RemElement);
-      customElements.define("rem05", RemElement);
-    </script>
     <script is:inline data-astro-rerun>
       document.querySelectorAll("h2").forEach((el) => {
         if (el.innerText === "---") {
@@ -494,21 +482,6 @@ const { tree, filteredHeadings, title } = await getContentTree({
       });
     </script>
     <style is:global>
-      rem {
-        display: block;
-        height: 1rem;
-      }
-
-      rem025 {
-        display: block;
-        height: 0.25rem;
-      }
-
-      rem05 {
-        display: block;
-        height: 0.5rem;
-      }
-
       .hidden-separator {
         width: 0;
         height: 0;
