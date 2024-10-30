@@ -23,6 +23,15 @@ export default defineConfig({
   build: {
     format: "file", // mandatory due to CloudFlare Pages trailing slash problem
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
+    }
+  },
   image: {
     domains: ["img.youtube.com"],
   },
