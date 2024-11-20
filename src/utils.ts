@@ -1,4 +1,5 @@
 import type { IHeading, TreeNode } from "@/types";
+import { fieldDefinitions } from "./data/field-definitions";
 
 export interface SidebarItem {
   type:
@@ -21,18 +22,17 @@ interface Props {
 
 export const getContentTree = async (props: Props) => {
   const [metaFiles, mdxFiles] = await Promise.all([
-    import.meta.glob<Array<string | string[]>>("./content/**/*.json"),
+    import.meta.glob("./content/**/*.json"),
     import.meta.glob<Array<string | string[]>>("./content/**/*.mdx"),
   ]);
 
-  const mdxPaths = Object.keys(mdxFiles);
-
-  const regex = /\.\/content\/docs\/_meta\.json/;
+  const mdxPaths = Object.keys(mdxFiles);  
+  const regex = /\.\/content\/(.*?)\/_meta\.json/;
 
   const navItems: SidebarItem[] = [];
 
   const getTypeOfFile = (value: string): SidebarItem["type"] => {
-    if (mdxPaths.includes(`./content/docs/${value}.mdx`)) {
+    if (mdxPaths.includes(`./content/${value}.mdx`)) {
       return "mdx";
     }
     if (mdxPaths.some((path) => path.includes(value))) {
@@ -42,16 +42,16 @@ export const getContentTree = async (props: Props) => {
   };
 
   for (const meta in metaFiles) {
-    const parsed: MetaItems = (await metaFiles[meta]()).default;
-
+    const { default: parsed } = await metaFiles[meta]() as { default: string[] };
     const metaSlug = meta.match(regex);
     if (metaSlug) {
+      const extractedText = metaSlug[1];
       parsed.forEach((key, i) => {
         if (Array.isArray(key)) {
           navItems.push({
-            type: getTypeOfFile(`${key[0]}`),
+            type: getTypeOfFile(`${metaSlug[1]}/${key[0]}`),
             title: key[1],
-            path: `docs/${key[0]}`,
+            path: `${extractedText}/${key[0]}`,
           });
         }
         if (typeof key === "string") {
@@ -59,19 +59,19 @@ export const getContentTree = async (props: Props) => {
             navItems.push({
               type: "dot-separator",
               title: "dot-separator",
-              path: `docs/${key}${i}`,
+              path: `${extractedText}/${key}${i}`,
             });
           } else if (key.includes("::")) {
             navItems.push({
               type: "collapsable",
               title: key.replace("::", ""),
-              path: `docs/${key}`,
+              path: `${extractedText}/${key}`,
             });
           } else {
             navItems.push({
               type: "separator",
               title: key,
-              path: `docs/${key}`,
+              path: `${extractedText}/${key}`,
             });
           }
         }
@@ -101,13 +101,21 @@ export const getContentTree = async (props: Props) => {
       }
     }
 
-    const findDialects = (node: TreeNode) => {
+    const fieldDefinitionsNames = Object.keys(fieldDefinitions);
+
+    const findFieldDefinitions = (node: TreeNode) => {
       if (node.children) {
-        node.children.forEach((child) => findDialects(child));
+        const dialects = node.children.filter((child) =>
+          fieldDefinitionsNames.includes(child.name),
+        );
+        if (dialects.length > 0) {
+          node.type = "withFieldDefinitions";
+        }
+        node.children.forEach((child) => findFieldDefinitions(child));
       }
     };
 
-    tree.forEach((node) => findDialects(node));
+    tree.forEach((node) => findFieldDefinitions(node));
 
     return tree;
   };

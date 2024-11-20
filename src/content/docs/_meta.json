@@ -27,5 +27,5 @@
   ["job-query", "Job"],
   
   "Manage schema",
-  ["definitions", "Field definitions"]
+  ["field-definitions", "Field definitions"]
 ]
