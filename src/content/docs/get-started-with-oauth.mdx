@@ -1,0 +1,249 @@
+import Npm from '@mdx/Npm.astro';
+import Npx from '@mdx/Npx.astro';
+import Callout from '@mdx/Callout.astro';
+import Prerequisites from "@mdx/Prerequisites.astro";
+import CodeTabs from '@mdx/CodeTabs.astro';
+
+# Get Started with Tento and Shopify OAuth
+
+<Prerequisites>
+  - **@shopify/shopify-api** - package for access for the Shopify Admin API - [read here](https://www.npmjs.com/package/@shopify/shopify-api/)
+  - **express** - package for Node.js web framework - [read here](https://www.npmjs.com/package/express/)
+  - **dotenv** - package for managing environment variables - [read here](https://www.npmjs.com/package/dotenv/)
+  - **tsx** - package for running TypeScript files - [read here](https://tsx.is/)
+  - **ngrok** - tool for creating secure tunnels to localhost, ideal for testing webhooks - [read here](https://download.ngrok.com/)
+</Prerequisites>
+
+We will use `ngrok` tool to create secure tunnel to our `express` local server for this get started example.
+
+#### Step 1 - Install dependencies
+<Npm>
+@drizzle-team/tento
+</Npm>
+
+#### Step 2 - Setup connection variables
+Create a `.env` file in the root of your project and add your Shopify Application variables:
+```plaintext copy
+SHOPIFY_API_KEY=
+SHOPIFY_API_SECRET_KEY=
+SHOPIFY_SCOPES=
+SHOPIFY_SHOP=
+```
+
+<Callout title='tips'>
+If you don't have a Shopify Application and developer store yet and want to create one for testing, you can use official Shopify guide (Make sure to set up [API scopes](https://shopify.dev/docs/api/usage/access-scopes) for your Shopify Application for `metaobjects`). 
+After you create Shopify Application you'll need to get your secret variables, you can use official Shopify manual for it.
+
+The official Shopify guide is available [here](https://shopify.dev/docs/apps/build/scaffold-app).  
+The official Shopify manual to get secrets [here](https://help.shopify.com/en/manual/apps/app-types/custom-apps#get-the-api-credentials-for-a-custom-app).
+</Callout>
+
+#### Step 3 - Declare schema file
+Create a `schema.ts` file and declare your metaobjects and metafields schema:
+
+<Callout title='info'>
+As of now Tento only supports one schema file.
+</Callout>
+
+```typescript copy filename="src/db/schema.ts"
+import { metaobject, metafield } from '@drizzle-team/tento';
+
+export const description = metafield({
+  name: "Description",
+  key: "description",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  fieldDefinition: (f) => f.multiLineTextField(),
+});
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+```
+<Callout title='tips'>
+If you don't have knowledge about Shopify metaobjects and metafields yet, or you want to see full possibilities for those, you can study them on Shopify.
+
+Metaobjects [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metaobject).  
+Metafields [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metafield).
+</Callout>
+
+#### Step 4 - Start ngrok
+Start your **ngrok** tunnel to `localhost` using:
+```bash
+ngrok http 5000
+```
+<Callout title='info'>
+We use port 5000 for our get started example, but you can use any port if you need.
+</Callout>
+
+#### Step 5 - Setup express web app for OAuth
+Create a `index.ts` file and initialize express app. Put `hostName` and `hostScheme` variables from ngrok. 
+This is actually official `@shopify/shopify-api` OAuth example using `express`, you can find it [here](https://github.com/Shopify/shopify-app-js/tree/main/packages/apps/shopify-api).
+```typescript copy filename="src/index.ts"
+import "dotenv/config";
+import "@shopify/shopify-api/adapters/node";
+import express from "express";
+import {
+  CookieNotFound,
+  InvalidOAuthError,
+  LATEST_API_VERSION,
+  Session,
+  shopifyApi,
+} from "@shopify/shopify-api";
+import * as schema from "./db/schema";
+import { tento } from "@drizzle-team/tento";
+
+const shopify = shopifyApi({
+  apiKey: process.env.SHOPIFY_API_KEY!,
+  apiSecretKey: process.env.SHOPIFY_API_SECRET_KEY!,
+  scopes: process.env.SHOPIFY_SCOPES!.split(/,\s*/),
+  hostName: "***.ngrok-free.app", // ngrok link
+  hostScheme: "https", // https for ngrok
+  apiVersion: LATEST_API_VERSION,
+  isEmbeddedApp: true,
+});
+
+async function main() {
+    const app = express();
+
+    app.use(express.json());
+
+    // our future Shopify session
+    let session: Session | undefined = undefined;
+    const SHOPIFY_SHOP = process.env.SHOPIFY_SHOP!;
+
+    app.get("/auth", async (req, res) => {
+      await shopify.auth.begin({
+        shop: shopify.utils.sanitizeShop(SHOPIFY_SHOP, true)!,
+        callbackPath: "/auth/callback",
+        isOnline: false,
+        rawRequest: req,
+        rawResponse: res,
+      });
+    });
+
+    app.get("/auth/callback", async (req, res) => {
+      try {
+        const callback = await shopify.auth.callback({
+          rawRequest: req,
+          rawResponse: res,
+        });
+
+        session = callback.session;
+        /*
+        session: {
+          id: string
+          shop: string
+          state: string
+          isOnline: boolean
+          accessToken: string
+          scope: string
+        }
+        */
+
+        return res.redirect("/");
+      } catch (e: any) {
+        if (e instanceof InvalidOAuthError) {
+          return res.status(400).json({
+            status: "ERROR",
+            message: e.message,
+            code: 400,
+          });
+        }
+        if (e instanceof CookieNotFound) {
+          await shopify.auth.begin({
+            shop: shopify.utils.sanitizeShop(SHOPIFY_SHOP, true)!,
+            callbackPath: "/auth/callback",
+            isOnline: false,
+            rawRequest: req,
+            rawResponse: res,
+          });
+        }
+      }
+    });
+
+    app.get("/", async (req, res) => {
+      if (!session) {
+        return res.redirect("/auth");
+      }
+
+      // initialize Shopify Graphql client using session from /auth/callback
+      const gqlClient = new shopify.clients.Graphql({
+        session,
+      });
+
+      // initialize Tento client using Shopify Graphql client
+      const client = tento({ client: gqlClient, schema });
+
+      // apply your previouse declared schema to Shopify Store
+      await client.applySchema();
+
+      return res.json({ success: true });
+    });
+
+    app.listen(5000, () => {
+      console.log("App listening on the port 5000");
+    });
+}
+
+main();
+```
+#### Step 6 - Add ngrok link to your Shopify Application
+Open **[Shopify Partners](https://partners.shopify.com/)** -- **Login to your account**  
+Click **Apps** (in the left toolbar) -- **Click on your App**
+
+[![Shopify Partners Select Application](@/assets/images/shopify-partners-select-app.png)]()  
+
+Click **Configuration** (in the left toolbar)  
+
+[![Shopify Partners Application Configuration](@/assets/images/shopify-partners-app-config.png)]()
+
+Scroll to **URLs** section and add:
+```bash
+APP URL
+https://***.ngrok-free.app/
+```
+```bash
+Allowed redirection URL(s)
+https://***.ngrok-free.app/auth/callback
+```
+Click **Save and Release**
+
+#### Step 7 - Run index.ts file
+To run any TypeScript files, you have several options, but let's stick with one: using `tsx`
+
+You've already installed `tsx`, so we can run our queries now
+
+**Run `index.ts` script**
+<Npx>
+  tsx src/index.ts
+</Npx>
+
+
+#### Step 8 - Open Application in Shopify Store
+Open your **[Shopify Store](https://admin.shopify.com/)** -- Click **Apps** (in the left toolbar) -- **Click on your App**  
+
+[![Shopify Store Search App](@/assets/images/shopify-store-search-app.png)]()  
+
+<Callout title='info'>
+Wait until Shopify Store get response from your express server. Once it get it, you'll see this screen.
+</Callout>
+[![Shopify Store open App](@/assets/images/shopify-store-open-app.png)]()  
+
+<Callout title='info'>
+After succeed you can go to **Settings** -- **Custom data** and find generated **Metafields** in **Products** and Designer **Metaobject definition**
+</Callout>

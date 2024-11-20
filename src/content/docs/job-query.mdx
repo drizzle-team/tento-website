@@ -1,0 +1,25 @@
+import CodeTab from '@mdx/CodeTab.astro';
+
+# Tento job query
+
+Tento represents Shopify [Job query](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/job)
+<CodeTab>
+```typescript copy
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./schema";
+
+const client = tento({ schema });
+
+const result = await client.jobs.get("gid://shopify/Job/1");
+```
+```typescript
+// return type
+const result: {
+  id: string;
+  done: boolean;
+}
+```
+</CodeTab>
+\
+Also if you work with **Bulk Delete** for **Metaobjects**, **Tento** return `ShopifyJobOperation` instance what give you ability to check current `job` status and method to update the `job` status.
+You can find it [here](/docs/metaobject-delete#job-operation).

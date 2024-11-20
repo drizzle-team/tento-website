@@ -1,0 +1,813 @@
+---
+title: Metaobject Field Definitions
+---
+
+import Callout from "@mdx/Callout.astro";
+import Section from '@mdx/Section.astro';
+
+Tento use all declared Shopify definitions, you can find all of them [here](https://shopify.dev/docs/apps/build/custom-data/metafields/list-of-data-types)
+
+###### single_line_text_field
+`string`  
+A single-line text field. String value types can store up to five million characters.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.singleLineTextField(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.singleLineTextField({
+  name: "text_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.singleLineTextField({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.singleLineTextField({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum length](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-length)\
+Sets the minimum length of a text value
+```typescript
+field: f.singleLineTextField({
+  validations: (v) => [v.min(1)],
+});
+```
+* [Maximum length](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-length)\
+Sets the maximum length of a text value
+```typescript
+field: f.singleLineTextField({
+  validations: (v) => [v.max(1)],
+});
+```
+* [Regular expression](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#regular-expression)\
+Sets a regular expression. Shopify supports [RE2](https://github.com/google/re2/wiki/Syntax).
+```typescript
+field: f.singleLineTextField({
+  validations: (v) => [v.regex(".")],
+});
+```
+* [Choices](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#choices)\
+A list of up to 128 predefined options that limit the values allowed for the metafield.
+```typescript
+field: f.singleLineTextField({
+  validations: (v) => [v.choices(['choice1', 'choice2'])],
+});
+```
+</Callout>
+
+
+###### list.single_line_text_field
+`string[]`  
+A list of single-line text fields.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.singleLineTextList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.singleLineTextList({
+  name: "text_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.singleLineTextList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.singleLineTextList({
+  description: "description",
+})
+```
+
+
+###### multi_line_text_field
+`string`  
+A multi-line text field. String value types can store up to five million characters.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.multiLineTextField(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.multiLineTextField({
+  name: "text_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.multiLineTextField({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.multiLineTextField({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum length](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-length)\
+Sets the minimum length of a text value
+```typescript
+field: f.multiLineTextField({
+  validations: (v) => [v.min(1)],
+});
+```
+* [Maximum length](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-length)\
+Sets the maximum length of a text value
+```typescript
+field: f.multiLineTextField({
+  validations: (v) => [v.max(1)],
+});
+```
+* [Regular expression](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#regular-expression)\
+Sets a regular expression. Shopify supports [RE2](https://github.com/google/re2/wiki/Syntax).
+```typescript
+field: f.multiLineTextField({
+  validations: (v) => [v.regex(".")],
+});
+```
+</Callout>
+
+
+###### number_decimal
+`string`  
+A number with decimal places in the range of +/-9999999999999.999999999. String value types can store up to five million characters.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.decimal(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.decimal({
+  name: "decimal_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.decimal({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.decimal({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum decimal](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-decimal)\
+Sets the minimum decimal number
+```typescript
+field: f.decimal({
+  validations: (v) => [v.min(1)],
+});
+```
+* [Maximum decimal](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-decimal)\
+Sets the maximum decimal number
+```typescript
+field: f.decimal({
+  validations: (v) => [v.max(1)],
+});
+```
+* [Maximum precision](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-precision)\
+Sets the maximum number of decimal places to store for a decimal number
+```typescript
+field: f.decimal({
+  validations: (v) => [v.maxPrecision(1)],
+});
+```
+</Callout>
+
+
+###### list.number_decimal
+`string[]`  
+A list of numbers with decimal places in the range of +/-9999999999999.999999999.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.decimalList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.decimalList({
+  name: "decimal_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.decimalList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.decimalList({
+  description: "description",
+})
+```
+
+
+###### url
+`string`  
+A URL with one of the allowed schemes: `https`, `http`, `mailto`, `sms`, `tel`. String value types can store up to five million characters.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.url(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.url({
+  name: "url_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.url({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.url({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Allowed domains](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#allowed-domains)\
+A list of allowed domains.
+```typescript
+field: f.url({
+  validations: (v) => [v.allowedDomains("google.com")],
+});
+```
+</Callout>
+
+
+###### list.url
+`string[]`  
+A list of URLs with one of the allowed schemes: `https`, `http`, `mailto`, `sms`, `tel`.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.urlList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.urlList({
+  name: "url_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.urlList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.urlList({
+  description: "description",
+})
+```
+
+
+###### number_integer
+`integer`  
+A whole number in the range of +/-9,007,199,254,740,991.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.integer(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.integer({
+  name: "integer_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.integer({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.integer({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum integer](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-integer)\
+Sets the minimum integer number
+```typescript
+field: f.integer({
+  validations: (v) => [v.min(1)],
+});
+```
+* [Maximum integer](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-integer)\
+Sets the maximum integer number
+```typescript
+field: f.integer({
+  validations: (v) => [v.max(1)],
+});
+```
+</Callout>
+
+
+###### list.number_integer
+`string[]`  
+A list of whole numbers in the range of +/-9,007,199,254,740,991.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.integerList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.integerList({
+  name: "integer_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.integerList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.integerList({
+  description: "description",
+})
+```
+
+
+###### date
+`string`  
+A date in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone. String value types can store up to five million characters.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.date(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.date({
+  name: "date_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.date({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.date({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum date](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-date)\
+Sets the minimum date in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format
+```typescript
+field: f.date({
+  validations: (v) => [v.min("2024-01-01")],
+});
+// or
+field: f.date({
+  validations: (v) => [v.min(new Date("2024-01-01"))],
+});
+```
+* [Maximum date](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-date)\
+Sets the maximum date in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format
+```typescript
+field: f.date({
+  validations: (v) => [v.max("2024-01-01")],
+});
+// or
+field: f.date({
+  validations: (v) => [v.min(new Date("2024-01-01"))],
+});
+```
+</Callout>
+
+
+###### list.date
+`string[]`  
+A list of dates in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.dateList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.dateList({
+  name: "date_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.dateList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.dateList({
+  description: "description",
+})
+```
+
+
+###### date_time
+`string`  
+A date and time in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone. Defaults to Greenwich Mean Time (GMT). String value types can store up to five million characters.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.dateTime(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.dateTime({
+  name: "date_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.dateTime({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.dateTime({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum datetime](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-datetime)\
+Sets the minimum date and time in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format
+```typescript
+field: f.dateTime({
+  validations: (v) => [v.min("2024-01-01")],
+});
+// or
+field: f.dateTime({
+  validations: (v) => [v.min(new Date("2024-01-01"))],
+});
+```
+* [Maximum datetime](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-datetime)\
+Sets the maximum date and time in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format
+```typescript
+field: f.dateTime({
+  validations: (v) => [v.max("2024-01-01")],
+});
+// or
+field: f.dateTime({
+  validations: (v) => [v.min(new Date("2024-01-01"))],
+});
+```
+</Callout>
+
+
+###### list.date_time
+`string[]`  
+A list of dates and times in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone. Defaults to Greenwich Mean Time (GMT).
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.dateTimeList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.dateTimeList({
+  name: "date_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.dateTimeList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.dateTimeList({
+  description: "description",
+})
+```
+
+
+###### dimension
+`json`  
+A value and a unit of length. Valid unit values: `in`, `ft`, `yd`, `mm`, `cm`, `m`
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.dimension(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.dimension({
+  name: "dimension_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.dimension({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.dimension({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum dimension](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-dimension)\
+Sets the minimum dimension
+```typescript
+field: f.dimension({
+  validations: (v) => [v.min({
+    value: 1,
+    unit: "CENTIMETERS",
+  })],
+});
+```
+* [Maximum dimension](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-dimension)\
+Sets the maximum dimension
+```typescript
+field: f.dimension({
+  validations: (v) => [v.max({
+    value: 1,
+    unit: "CENTIMETERS",
+  })],
+});
+```
+</Callout>
+
+
+###### list.dimension
+`json[]`  
+A list of values and a unit of length. Valid unit values: `in`, `ft`, `yd`, `mm`, `cm`, `m`
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.dimensionList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.dimensionList({
+  name: "dimension_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.dimensionList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.dimensionList({
+  description: "description",
+})
+```
+
+
+###### volume
+`json`  
+A value and a unit of volume. Valid unit values: `ml`, `cl`, `l`, `m3` (cubic meters), `us_fl_oz`, `us_pt`, `us_qt`, `us_gal`, `imp_fl_oz`, `imp_pt`, `imp_qt`, `imp_gal`.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.volume(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.volume({
+  name: "volume_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.volume({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.volume({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum volume](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-volume)\
+Sets the minimum volume
+```typescript
+field: f.volume({
+  validations: (v) => [v.min({
+    value: 1,
+    unit: "LITERS",
+  })],
+});
+```
+* [Maximum volume](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-volume)\
+Sets the maximum volume
+```typescript
+field: f.volume({
+  validations: (v) => [v.max({
+    value: 1,
+    unit: "LITERS",
+  })],
+});
+```
+</Callout>
+
+
+###### list.volume
+`json[]`  
+A list of values and a unit of volume. Valid unit values: `ml`, `cl`, `l`, `m3` (cubic meters), `us_fl_oz`, `us_pt`, `us_qt`, `us_gal`, `imp_fl_oz`, `imp_pt`, `imp_qt`, `imp_gal`.
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.volumeList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.volumeList({
+  name: "volume_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.volumeList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.volumeList({
+  description: "description",
+})
+```
+
+
+###### weight
+`json`  
+A value and a unit of weight. Valid unit values: `oz`, `lb`, `g`, `kg`
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.weight(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.weight({
+  name: "weight_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.weight({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.weight({
+  description: "description",
+})
+```
+
+<Callout collapsed="Validations">
+Custom validations that apply to values assigned to the field.
+* [Minimum weight](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#minimum-weight)\
+Sets the minimum weight
+```typescript
+field: f.weight({
+  validations: (v) => [v.min({
+    value: 1,
+    unit: "KILOGRAMS",
+  })],
+});
+```
+* [Maximum weight](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions/list-of-validation-options#maximum-weight)\
+Sets the maximum weight
+```typescript
+field: f.weight({
+  validations: (v) => [v.max({
+    value: 1,
+    unit: "KILOGRAMS",
+  })],
+});
+```
+</Callout>
+
+
+###### list.weight
+`json[]`  
+A list of values and a unit of weight. Valid unit values: `oz`, `lb`, `g`, `kg`
+
+```typescript
+export const metaobjectDefinition = metaobject({
+  name: "Metaobject Definition",
+  type: "metaobject_definition",
+  fieldDefinitions: (f) => ({
+    field: f.weightList(),
+  }),
+});
+
+/** A human-readable name for the field. This can be changed at any time. */
+field: f.weightList({
+  name: "weight_field",
+})
+
+/** Whether metaobjects require a saved value for the field. */
+field: f.weightList({
+  required: true, // false as default
+})
+
+/** An administrative description of the field. */
+field: f.weightList({
+  description: "description",
+})
+```
+

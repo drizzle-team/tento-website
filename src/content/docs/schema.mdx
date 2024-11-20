@@ -1,0 +1,116 @@
+import Flex from "@mdx/Flex.astro"
+import LinksList from "@mdx/LinksList.astro"
+
+# Tento schema
+
+Tento lets you define a schema in TypeScript with **metaobject** and **metafield** models. 
+When you define your schema, it serves as the source of truth for future modifications in queries
+and migrations.
+
+## Organize your schema files 
+You can declare your schema directly in TypeScript for now **only** in a single `schema.ts` file wherever you prefer!  
+
+> Note: You can name your schema file whatever you like. For example, it could be `definitions.ts`, or something else.
+
+Example:
+    ```plaintext
+📦 <project root>
+ └ 📂 src
+    └ 📂 db
+       └ 📜 schema.ts
+    ```
+
+In the Tento you can also specify `tento.config.ts` file for CLI migrations. In the config file you need to specify the path to your schema file. With this configuration, Tento will 
+read from the `schema.ts` file and use this information during the migration process. For more information 
+about the `tento.config.ts` file and migrations, please check: [link](/docs/tento-cli-overview)
+```ts
+import { defineConfig } from "@drizzle-team/tento/cli";
+
+export default defineConfig({
+  schemaPath: "./src/schema.ts",
+  shop: process.env.SHOPIFY_SHOP_ID!,
+  headers: {
+    "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+  },
+});
+```
+
+## **Metaobject schema declaration**
+A Metaobject should be defined with at least `name`, `type`, `fieldDefinitions()` fields.
+
+```typescript
+import { metaobject } from "@drizzle-team/tento";
+
+const user_description = metaobject({
+  name: "User Description",
+  type: "user_description",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField(),
+  }),
+});
+```
+
+## **Metafield schema declaration**
+A Metafield should be defined with at least `name`, `key`, `type`, `fieldDefinition()` fields.
+
+```typescript
+import { metafield } from "@drizzle-team/tento";
+
+export const metafieldDefinition = metafield({
+  name: "Metafield Definition",
+  key: "metafield_definition",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  fieldDefinition: (f) => f.singleLineTextField(),
+});
+```
+
+## Example
+Once you know the basics, let's define a schema example for a real project to get a better view and understanding
+
+```typescript copy
+import { metaobject, metafield } from '@drizzle-team/tento';
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+
+export const designer_reference = metafield({
+  name: "Designer",
+  key: "designer",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  useAsCollectionCondition: true,
+  visibleToStorefrontApi: true,
+  pin: true,
+  fieldDefinition: (f) =>
+    f.metaobjectReference({
+      validations: (v) => [v.metaobjectDefinitionType(() => designer.type)],
+    }),
+});
+```
+
+#### What's next?
+<br/>
+<Flex>
+  <LinksList 
+    title='Manage schema'
+    links={[
+        ["Field definitions", "/docs/definitions/metaobject"], 
+      ]}
+  />
+</Flex>

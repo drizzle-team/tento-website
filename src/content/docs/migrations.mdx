@@ -1,174 +1,172 @@
-### Schema Migrations | Pull
+import CodeTab from '@mdx/CodeTab.astro';
+import CodeTabs from '@mdx/CodeTabs.astro';
+import Section from '@mdx/Section.astro';
+import Tab from '@mdx/Tab.astro';
+import Tabs from '@mdx/Tabs.astro';
+import Callout from '@mdx/Callout.astro';
+import Npm from '@mdx/Npm.astro';
+import Npx from '@mdx/Npx.astro';
+import Steps from '@mdx/Steps.astro';
+import Prerequisites from "@mdx/Prerequisites.astro"
 
-Now let's pull your existing Shopify Metaobjects schema, first we need to create a `tento.config.ts` file:
+# Migrations with Tento CLI
 
-```ts
+Shopify Metaobject and Metafield definitions require you to specify a **strict schema** of definitions and if (when) you need to change
+those entities - you will need to do it via **migrations**.
+
+## Overview
+<Prerequisites>
+- Get started with Tento - [read here](/docs/get-started)
+- Tento schema foundamentals - [read here](/docs/schema)
+</Prerequisites>
+
+**Tento** has a CLI tool for managing Shopify Metaobjects and Metafields schema definitions.\
+\
+Based on your schema, Tento let's you push your definitions schema directly to the Shopify, pull schema definitions from Shopify and has a couple of commands.
+<Npx>
+tento pull
+tento push
+</Npx>
+|                                                      |                                                                                                                                                                    |
+| :--------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`tento pull`](/docs/migrations#pull)                | lets you pull (introspect) Shopify definitions schema, convert it to Tento schema and save it to your codebase, [see here](/docs/drizzle-kit-pull)                 |
+| [`tento push`](/docs/migrations#push)                | lets you push your Tento definitions schema directly to Shopify, [see here](/docs/drizzle-kit-push)                                                                |
+
+## tento.config.ts
+Tento migrations is configured through **tento.config.ts** configuration file.\
+It's required to provide `schemaPath`, `shop` and `X-Shopify-Access-Token` for Tento.
+```
+📦 <project root>
+ ├ 📂 src
+ ├ 📜 .env
+ ├ 📜 tento.config.ts  <--- Tento config file
+ ├ 📜 package.json
+ └ 📜 tsconfig.json
+```
+```typescript filename="tento.config.ts"
+import 'dotenv/config';
 import { defineConfig } from "@drizzle-team/tento/cli";
 
 export default defineConfig({
-  schemaPath: "./src/schema.ts",
-  shop: "d91122",
+  schemaPath: './src/schema.ts',
+  shop: process.env.SHOPIFY_SHOP_ID!,
   headers: {
-    "X-Shopify-Access-Token": process.env["SHOPIFY_ADMIN_API_TOKEN"]!,
+    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN!,
   },
 });
 ```
+<Callout type="warning">
+To have understanding of what `SHOPIFY_SHOP_ID` and `SHOPIFY_ACCESS_TOKEN` variables represent go through Tento [Get started with OAuth](/docs/get-started-with-oauth).
+</Callout>
 
-Now let's run Tento CLI `pull` command
+## `pull`
 
-```bash
-npx tento pull
-yarn tento pull
-pnpm tento pull
-bun tento pull
+`tento pull` lets literally pull (introspect) your Shopify definitions schema and generate `schema.ts` tento schema file.
+
+<Callout collapsed="How it works under the hood?">
+When you run `pull` command it will:
+1. Pull Metaobject and Metafield definitions schema from Shopify
+2. Generate `schema.ts` tento schema file and save it to `out` folder
+
+<Section>
 ```
+                                   ┌────────────────────────┐
+                                   │                        │
+┌──────────────────────────┐       │                        │
+│ ~ tento pull             │       │                        │
+└─┬────────────────────────┘       │        Shopify         │
+  │                                │                        │
+  └ Pull definitions schema -----> │                        │
+  ┌ Generate Tento schema   <----- │                        │
+  │ TypeScript file                └────────────────────────┘
+  │
+  v
+```
+```typescript filename="src/schema.ts"
+import { metaobject, metafield } from '@drizzle-team/tento';
 
-Tento CLI will consume `tento.config.ts` and fetch your Shopify schema to your project `schema.ts` file:
+export const description = metafield({
+  name: "Description",
+  key: "description",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  fieldDefinition: (f) => f.multiLineTextField(),
+});
 
-```ts
-import { metaobject } from "@drizzle-team/tento";
-
-export const orm = metaobject({
-  name: "ORM",
-  type: "orm",
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
   fieldDefinitions: (f) => ({
     name: f.singleLineTextField({
-      name: "Name",
-      required: true,
-      validations: (v) => [v.min(1), v.max(50)],
-    }),
-    git_hub_repo: f.url({
-      name: "GitHub repo",
-      required: true,
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
-    stars: f.integer({
-      name: "Stars",
-      required: true,
-      validations: (v) => [v.min(0)],
-    }),
-    datetime: f.dateTime({
-      validations: (v) => [
-        v.min("2023-12-01T13:30:00Z"),
-        v.max("2023-12-02T13:30:00Z"),
-      ],
-    }),
-    multiline_text: f.multiLineTextField({
-      validations: (v) => [v.min(1), v.max(2), v.regex(/^[a-zA-Z]+$/)],
-    }),
-    decimal: f.decimal({
-      validations: (v) => [v.min(1.0), v.max(2.0), v.maxPrecision(2)],
-    }),
-    decimal_list: f.decimalList({
-      required: true,
-      validations: (v) => [v.min(1.0), v.max(2.0), v.maxPrecision(2)],
-    }),
-    date_list: f.dateList({
-      validations: (v) => [v.min("2023-12-01"), v.max("2023-12-02")],
-    }),
-    dimension: f.dimension({
-      validations: (v) => [
-        v.min({ value: 1, unit: "METERS" }),
-        v.max({ value: 5, unit: "FEET" }),
-      ],
-    }),
-    dimension_list: f.dimensionList({
-      validations: (v) => [
-        v.min({ value: 1, unit: "INCHES" }),
-        v.max({ value: 5, unit: "YARDS" }),
-      ],
-    }),
-    volume: f.volume({
-      validations: (v) => [
-        v.min({ value: 1, unit: "MILLILITERS" }),
-        v.max({ value: 4, unit: "PINTS" }),
-      ],
-    }),
-    volume_list: f.volumeList({
-      validations: (v) => [
-        v.min({ value: 1, unit: "CENTILITERS" }),
-        v.max({ value: 4, unit: "IMPERIAL_FLUID_OUNCES" }),
-      ],
-    }),
-    date: f.date({
-      validations: (v) => [v.min("2023-12-01"), v.max("2023-12-02")],
-    }),
-    weight: f.weight({
-      validations: (v) => [
-        v.min({ value: 1, unit: "GRAMS" }),
-        v.max({ value: 5, unit: "OUNCES" }),
-      ],
-    }),
-    weight_list: f.weightList({
-      validations: (v) => [
-        v.min({ value: 1, unit: "KILOGRAMS" }),
-        v.max({ value: 100, unit: "POUNDS" }),
-      ],
-    }),
-  }),
-});
-
-export const book = metaobject({
-  name: "Book",
-  type: "book",
-  fieldDefinitions: (f) => ({
-    title: f.singleLineTextField({
       name: "Title",
       required: true,
-      validations: (v) => [v.min(1), v.max(100)],
-    }),
-    author: f.singleLineTextField({
-      name: "Author",
-      required: true,
       validations: (v) => [v.min(1), v.max(50)],
     }),
-    isbn: f.singleLineTextField({
-      name: "ISBN",
-      required: true,
-      validations: (v) => [v.regex(/^(97(8|9))?\d{9}(\d|X)$/)],
+    description: f.multiLineTextField({
+      name: "Description",
     }),
-    genre: f.singleLineTextField({
-      name: "Genre",
-      validations: (v) => [v.min(1), v.max(30)],
-    }),
-    language: f.singleLineTextField({
-      name: "Language",
-      validations: (v) => [v.min(1), v.max(20)],
-    }),
-    summary: f.multiLineTextField({
-      name: "Summary",
-      validations: (v) => [v.min(10), v.max(5000)],
-    }),
-    price: f.decimal({
-      name: "Price",
-      validations: (v) => [v.min(0.0), v.max(999.99), v.maxPrecision(2)],
-    }),
-    publication_date: f.date({
-      name: "Publication date",
-      validations: (v) => [v.min("2000-01-01"), v.max("2023-12-31")],
-    }),
-    page_count: f.integer({
-      name: "Page count",
-      required: true,
-      validations: (v) => [v.min(1), v.max(2000)],
-    }),
-    cover_type: f.singleLineTextField({
-      name: "Cover type",
-      validations: (v) => [v.min(1), v.max(20)],
+    website: f.url({
+      name: "Website",
     }),
   }),
 });
 ```
+</Section>
+</Callout>
 
-### Schema Migrations | Push
+## `push`
+`tento push` lets literally push your Tento definitions schema directly to Shopify.
+<Callout collapsed="How it works under the hood?">
+When you run Tento `push` command it will:
+1. Read through your Tento definitions schema file
+2. Pull (introspect) Shopify definitions schema 
+3. Based on differences between those two it will generate list of definitions to create, update or delete
+4. Apply those differences to the Shopify
 
-Whenever you change your locall schema - you can apply changes to your Shopify by using `tento push` command:
+<Section>
+```typescript filename="src/schema.ts"
+import { metaobject, metafield } from '@drizzle-team/tento';
 
-```bash
-~ npx tento push
+export const description = metafield({
+  name: "Description",
+  key: "description",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  fieldDefinition: (f) => f.multiLineTextField(),
+});
 
-- Updated metaobject definition "ORM"
-✅ All changes applied
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
 ```
-
-It will consume your `tento.config.ts` file, traverse your schema and apply any diffs to Shopify.
+```
+┌─────────────────────┐                  
+│ ~ tento push  │                  
+└─┬───────────────────┘                  
+  │                                            ┌──────────────────────────┐
+  └ Pull current definitions schema ---------> │                          │
+                                               │                          │
+  ┌ Generate alternations based on diff <----  │         Shopify          │
+  │                                            │                          │
+  └ Apply differences to the Shopify ------->  │                          │
+                                       │       └──────────────────────────┘
+                                       │
+  ┌────────────────────────────────────┴────────────────┐
+   create metafield description, create metaobject designer;
+```
+</Section>
+</Callout>

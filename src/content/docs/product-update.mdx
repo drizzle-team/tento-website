@@ -1,0 +1,63 @@
+import CodeTab from '@mdx/CodeTab.astro';
+import CodeTabs from '@mdx/CodeTabs.astro';
+import Callout from '@mdx/Callout.astro';
+
+# Tento Product Update
+
+Tento represents Shopify [Update Product mutation](https://shopify.dev/docs/api/admin-graphql/2024-10/mutations/productUpdate)
+<CodeTab>
+```typescript
+const result = await client.products.update("gid://shopify/Product/1", {
+  fields: {
+    title: "Product #1",
+  },
+});
+```
+```typescript
+// result type
+const result: {
+  title: string;
+}
+```
+</CodeTab>
+\
+If you want to add existed **Metafield Definition** to **Product**, you can provide a `metafields` object 
+and TypeScript will help you with metafields you can add:
+<CodeTabs items={["index.ts", "schema.ts"]}>
+<CodeTab>
+```typescript copy
+const result = await client.products.update("gid://shopify/Product/1", {
+  fields: {
+    metafields: {
+      // description is the name of metafield
+      description: "Innovative Product #1"
+    }
+  },
+});
+```
+```typescript
+// return type
+const result: {
+  metafields: {
+    key: string;
+    type: MetafieldFieldType;
+    namespace: string;
+    ownerType: MetafieldOwnerType;
+    id: string;
+    value: string;
+  }[];
+}
+```
+</CodeTab>
+```typescript copy
+import { metafield } from "@drizzle-team/tento";
+
+export const descriptionMetafield = metafield({
+  name: "description", // this name will be used as key for metafield
+  key: "description",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  fieldDefinition: (f) => f.multiLineTextField(),
+});
+```
+</CodeTabs> 

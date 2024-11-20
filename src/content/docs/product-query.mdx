@@ -1,0 +1,154 @@
+import CodeTab from '@mdx/CodeTab.astro';
+import Callout from '@mdx/Callout.astro';
+
+# Tento Product Query
+
+## List
+Tento represents Shopify [Products query](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/products)
+
+<Callout type="info">
+If don't provide partial fields selection **Tento** will return all possible fields for **Product**
+</Callout>
+<CodeTab>
+```typescript
+const result = await client.metaobjects.products.list();
+```
+```typescript
+// result type
+const result: {
+  items: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    isGiftCard: boolean;
+    category?: {
+      fullName: string;
+      id: string;
+      isLeaf: boolean;
+      isRoot: boolean;
+      name: string;
+      ancestorIds: number[];
+      childrenIds: number[];
+      isArchived: boolean;
+      level: number;
+      parentId?: number | undefined;
+    } | undefined;
+    ... 30 more ...;
+    vendor: string;
+    }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+
+## Partial fields select
+`fields` parameter lets you include or omit fields you want to get from Shopify.
+<Callout type="info">
+Tento performs partial selects on the query level, no additional data is transferred from the Shopify.
+</Callout>
+
+**Get including only with just `id`, `title`:**
+<CodeTab>
+```typescript
+const result = await client.metaobjects.products.list({
+  fields: {
+    id: true,
+    title: true,
+  },
+});
+```
+```typescript
+// result type
+const result: {
+  items: {
+    id: string;
+    title: string;
+  }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+\
+**Get excluding `id`, `handle`, `updatedAt`, `description`:**
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.list({
+  fields: {
+    id: false,
+    handle: false,
+    updatedAt: false,
+    description: false,
+  },
+});
+```
+```typescript
+// result type
+const result: {
+  items: {
+    createdAt: Date;
+    isGiftCard: boolean;
+    category: {
+      fullName: string;
+      id: string;
+      isLeaf: boolean;
+      isRoot: boolean;
+      name: string;
+      ancestorIds: number[];
+      childrenIds: number[];
+      isArchived: boolean;
+      level: number;
+      parentId?: number | undefined;
+    } | undefined;
+    ... 28 more ...;
+    vendor: string;
+  }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+\
+**Exclude and Include fields in the same query:**
+> When both `true` and `false` select options are present, all `false` options are ingored.
+
+If you include the `title` field and exclude the `id` field, `id` exclusion will be redundant, all fields apart from `title` would be excluded anyways.
+<CodeTab>
+```typescript
+const result = await client.metaobjects.products.list({
+  fields: {
+    id: false,
+    title: true,
+  },
+});
+```
+```typescript
+// result type
+const result: {
+  items: {
+    title: string;
+  }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+
+## Filters

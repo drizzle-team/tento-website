@@ -1,0 +1,133 @@
+import CodeTabs from '@mdx/CodeTabs.astro';
+import CodeTab from '@mdx/CodeTab.astro';
+import Callout from '@mdx/Callout.astro';
+
+# Tento Metaobject Delete
+
+## Delete one
+Tento represents Shopify [Delete Metaobject mutation](https://shopify.dev/docs/api/admin-graphql/2024-10/mutations/metaobjectDelete)
+
+You can delete the specified **metaobject** and its associated metafields:
+<CodeTabs items={["index.ts", "schema.ts"]}>
+```typescript copy
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./schema";
+
+const client = tento({ schema });
+
+await client.metaobjects.designer.delete("gid://shopify/Metaobject/1");
+```
+```typescript copy
+import { metaobject } from "@drizzle-team/tento";
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+```
+</CodeTabs> 
+
+## Bulk delete
+
+Tento represents Shopify [Bulk Delete Metaobject mutation](https://shopify.dev/docs/api/admin-graphql/2024-10/mutations/metaobjectBulkDelete)
+
+You can delete the specified list of **metaobjects**:
+<CodeTabs items={["index.ts", "schema.ts"]}>
+<CodeTab>
+```typescript copy
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./schema";
+
+const client = tento({ schema });
+
+const result = await client.metaobjects.designer.bulkDelete([
+  "gid://shopify/Metaobject/1",
+  "gid://shopify/Metaobject/2",
+]);
+```
+```typescript
+// return type
+const result: ShopifyJobOperation
+```
+</CodeTab>
+```typescript copy
+import { metaobject } from "@drizzle-team/tento";
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+```
+</CodeTabs> 
+<Callout type="info">
+Tento will return you a ShopifyJobOperation instance what give you ability to check current `job` status and method to update the `job` status.
+</Callout>
+
+## Job operation
+
+After the bulk deletion you can check current `job` status using:
+<CodeTab>
+```typescript copy
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./schema";
+
+const client = tento({ schema });
+
+const result = await client.metaobjects.designer.bulkDelete([
+  "gid://shopify/Metaobject/1",
+  "gid://shopify/Metaobject/2",
+]);
+const isDone = result.done;
+
+```
+```typescript
+// return type
+const result: {
+  done: boolean,
+  checkDone(): Promise<boolean>
+}
+
+const isDone: boolean;
+```
+</CodeTab>
+\
+To update `job` status info you can call `checkDone()` method:
+<CodeTab>
+```typescript copy
+const result = await client.metaobjects.designer.bulkDelete([
+  "gid://shopify/Metaobject/1",
+  "gid://shopify/Metaobject/2",
+]);
+const isDone = await result.checkDone();
+```
+```typescript
+// return type
+const isDone: boolean
+```
+</CodeTab>

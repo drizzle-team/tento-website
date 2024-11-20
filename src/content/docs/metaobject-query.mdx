@@ -1,0 +1,321 @@
+import CodeTabs from '@mdx/CodeTabs.astro';
+import CodeTab from '@mdx/CodeTab.astro';
+import Callout from '@mdx/Callout.astro';
+
+# Tento Metaobject Query
+
+Tento is designed to be a thin typed layer on top of Shopify GraphQL Client. We've designed in the best way to operate a Shopify from TypeScript
+and it time to make it better.
+
+Tento Metaobjects represents the Shopify Metaobject GraphQL with all features they have on the moment.
+
+Relational queries are meant to provide you with a great developer experience for querying. You can opt-in to use it based on your needs.
+
+<CodeTabs items={["index.ts", "schema.ts"]}>
+<CodeTab>
+```typescript copy
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./schema";
+
+const client = tento({ schema });
+
+const result = await client.metaobjects.designer.list();
+```
+```typescript
+{
+  items: [
+    {
+      _id: "gid://shopify/Metaobject/1",
+      _handle: "designer-d",
+      _displayName: "Designer #D",
+      _updatedAt: "2024-11-19T12:37:37.000Z",
+      name: "Tento",
+      description: "Made by Drizzle team",
+      website: "https://www.google.com/",
+    },
+  ],
+  pageInfo: {
+    startCursor: "eyJs=",
+    endCursor: "eyJs=",
+    hasNextPage: false,
+    hasPreviousPage: false,
+  },
+}
+```
+</CodeTab>
+```typescript copy
+import { metaobject } from "@drizzle-team/tento";
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+```
+</CodeTabs>
+## Querying
+You need to provide all `metaobject definitions` from your schema file upon `tento()` initialization and then just use `client.metaobjects` API.
+
+<CodeTabs items={["index.ts", "schema.ts"]}>
+```typescript copy
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./schema";
+
+const client = tento({ schema });
+
+await client.metaobjects.designer.list(...);
+```
+```typescript copy
+import { metaobject, metafield } from "@drizzle-team/tento";
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+
+export const user = metaobject({
+  name: "User",
+  type: "user",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Name",
+      required: true,
+      validations: (v) => [v.min(3), v.max(50)],
+    }),
+    lastName: f.singleLineTextField({
+      name: "Last name",
+      required: true,
+      validations: (v) => [v.min(3), v.max(50)],
+    }),
+    age: f.integer({
+      name: "Age",
+      validations: (v) => [v.min(18)],
+    }),
+  }),
+});
+```
+</CodeTabs>
+
+## List
+Tento represents Shopify [Metaobjects query](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/metaobjects)
+
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.list();
+```
+```typescript
+// result type
+const result: {
+  items: {
+    name: string;
+    description: string | null;
+    website: string | null;
+    _id: string;
+    _handle: string;
+    _displayName: string;
+    _updatedAt: Date;
+  }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+
+## Get
+Tento represents Shopify [Metaobject query](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/metaobject)
+
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1");
+```
+```typescript
+// return type
+const result: {
+  name: string;
+  description: string | null;
+  website: string | null;
+  _id: string;
+  _handle: string;
+  _displayName: string;
+  _updatedAt: Date;
+} | undefined
+```
+</CodeTab>
+
+## Partial fields select
+`fields` parameter lets you include or omit fields you want to get from Shopify.
+<Callout type="info">
+Tento performs partial selects on the query level, no additional data is transferred from the Shopify.
+</Callout>
+
+**Get including only with just `_id`, `name`:**
+<CodeTabs items={["List query", "Get query"]}>
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.list({
+  fields: {
+    _id: true,
+    name: true,
+  },
+});
+```
+```typescript
+// result type
+const result: {
+  items: {
+    _id: string;
+    name: string;
+  }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1", {
+  _id: true,
+  name: true,
+});
+```
+```typescript
+// result type
+const result: {
+  _id: string;
+  name: string;
+} | undefined
+```
+</CodeTab>
+</CodeTabs>
+
+\
+**Get excluding `_id`, `_handle`, `_displayName`, `_updatedAt`, `description`:**
+<CodeTabs items={["List query", "Get query"]}>
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.list({
+  fields: {
+    _id: false,
+    _handle: false,
+    _displayName: false,
+    _updatedAt: false,
+    description: false,
+  },
+});
+```
+```typescript
+// result type
+const result: {
+  items: {
+    name: string;
+    website: string | null;
+  }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1", {
+  _id: false,
+  _handle: false,
+  _displayName: false,
+  _updatedAt: false,
+  description: false,
+});
+```
+```typescript
+// result type
+const result: {
+  name: string;
+  website: string | null;
+} | undefined
+```
+</CodeTab>
+</CodeTabs>
+
+\
+**Exclude and Include fields in the same query:**
+> When both `true` and `false` select options are present, all `false` options are ingored.
+
+If you include the `name` field and exclude the `_id` field, `_id` exclusion will be redundant, all fields apart from `name` would be excluded anyways.
+<CodeTabs items={["List query", "Get query"]}>
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.list({
+  fields: {
+    _id: false,
+    name: true,
+  },
+});
+```
+```typescript
+// result type
+const result: {
+  items: {
+    name: string;
+  }[];
+  pageInfo: {
+    startCursor: string;
+    endCursor: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+```
+</CodeTab>
+<CodeTab>
+```typescript
+const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1", {
+  _id: false,
+  name: true,
+});
+```
+```typescript
+// result type
+const result: {
+  name: string;
+} | undefined
+```
+</CodeTab>
+</CodeTabs>
+
+## Filters

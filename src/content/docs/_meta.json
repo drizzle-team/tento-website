@@ -1,7 +1,31 @@
 [
   "Meet Tento",
-  ["components", "Components"],
   ["overview", "Overview"],
+  ["get-started", "Get started"],
+  ["get-started-with-oauth", "Get started with OAuth"],
+
+  "Fundamentals",
+  ["schema", "Schema"],
   ["migrations", "Migrations"],
-  ["queries", "Queries"]
+
+  "Metaobjects",
+  ["metaobject-query", "Query"],
+  ["metaobject-insert", "Insert"],
+  ["metaobject-update", "Update"],
+  ["metaobject-upsert", "Upsert"],
+  ["metaobject-delete", "Delete"],
+  ["metaobject-bulk-delete", "Bulk delete"],
+
+  "Metafields",
+  ["metafield-query", "Query"],
+
+  "Products",
+  ["product-query", "Query"],
+  ["product-update", "Update"],
+
+  "Common API",
+  ["job-query", "Job"],
+  
+  "Manage schema",
+  ["definitions", "Field definitions"]
 ]

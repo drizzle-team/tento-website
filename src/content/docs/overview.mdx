@@ -1,97 +1,85 @@
 import Npm from '@mdx/Npm.astro'
+import Npx from '@mdx/Npx.astro';
+import CodeTab from '@mdx/CodeTab.astro';
+import Flex from "@mdx/Flex.astro"
+import LinksList from "@mdx/LinksList.astro"
 
-## Overview
+# Overview
 
-Tento provides a simple yet powerful API for working with Shopify data, including metaobjects and metafields.
+Build by [drizzle team](https://drizzle.team/)
+
+Tento - is simple yet powerful API for working with Shopify data, including metaobjects, metafields and products.
 It also provides a CLI tool for two-way synchronization between your local schema definition and Shopify.
-
-## Quick Start
-
-### Installation
-
-You can install Tento with your preferred package manager:
-
+<CodeTab>
 <Npm>
 @drizzle-team/tento
 </Npm>
+```typescript
+import { tento } from '@drizzle-team/tento';
+import * as schema from './schema';
 
-### Schema
+const client = tento({ schema });
 
-Declare your Tento metaobjects schema in `schema.ts` file.
-As of now Tento CLI only supports one schema file:
+await client.metaobjects.designer.list();
+```
+</CodeTab>
 
-```ts
-import { metaobject } from '@drizzle-team/tento';
+## [Schema](/docs/schema)
+Tento lets you declare a definition schema with both **metaobjects** and **metafields**. 
+It serves as the source of truth for queries and migrations.
+```typescript
+import { metaobject } from "@drizzle-team/tento";
 
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
   fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
-      required: true,
-      validations: (v) => [v.min(5), v.max(100)],
-    }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
-    }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
+    name: f.singleLineTextField(),
   }),
 });
 ```
 
-### Tento queries client
-
-```ts
-import { tento } from '@drizzle-team/tento';
-import * as schema from './schema';
-
-// Using @shopify/shopify-api (or its wrappers)
-import '@shopify/shopify-api/adapters/node';
-import { shopifyApi, ApiVersion } from '@shopify/shopify-api';
-const shopifyClient = shopifyApi({ ... });
-const gqlClient = new shopifyApiClient.clients.Graphql({
-  session: ...,
-});
-
-// Using raw fetch
-import { createClient } from '@drizzle-team/tento';
-const gqlClient = createClient({
-  shop: 'your-shop-name',
-  headers: {
-    // any headers you need
-    // Content-Type is added automatically unless you override it
-    'X-Shopify-Access-Token': 'your-admin-api-access-token',
-  },
-  fetch: customFetch, // optionally provide your own fetch implementation
-});
-
-// Create Tento client from any Shopify client above
-const client = tento({
-  client: gqlClient,
-  schema,
-});
-
-// Apply the local schema to Shopify
-await client.applySchema();
-
-// Query metaobjects
-const designers = await tento.metaobjects.designers.list({
-  first: 10,
-});
-/*
-  {
-    _id: string;
-    _handle: string;
-    _updatedAt: Date;
-    fullName: string;
-    description: string;
-    link: string;
-  }[]
-*/
+## [Metaobjects](/docs/metaobject-query)
+Tento represents Shopify Metaobject API.
+```typescript
+await client.metaobjects.designer.list();
 ```
+
+## [Metafields](/docs/metafield-query)
+Tento represents Shopify Metafield API. Now you can declare your schema file with **metafield** definitions and use it for 
+metaobject definition reference, products.
+
+## [Products](/docs/product-query)
+Tento represents Shopify Product API.
+```typescript
+await client.products.list();
+```
+
+## [Migrations](/docs/migrations)
+Tento has a CLI tool for managing Shopify Metaobjects and Metafields schema definitions.
+<CodeTab>
+<Npx>
+tento pull
+tento push
+</Npx>
+```typescript
+export default defineConfig({
+  schemaPath: './src/schema.ts',
+  shop: process.env.SHOPIFY_SHOP_ID!,
+  headers: {
+    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN!,
+  },
+});
+```
+</CodeTab>
+
+#### What's next?
+<br/>
+<Flex>
+  <LinksList 
+    links={[
+        ["Get started", "/docs/get-started"], 
+        ["Get started with OAuth", "/docs/get-started-with-oauth"], 
+      ]}
+  />
+</Flex>

@@ -1,0 +1,45 @@
+import CodeTabs from '@mdx/CodeTabs.astro';
+import CodeTab from '@mdx/CodeTab.astro';
+
+# Tento Metafield Query
+
+Tento support work with [Metafield Definitions](/docs/definitions/metafield).  
+Also Tento has possibility to add Metafield in products using [Update Product API](/docs/product-update):
+<CodeTabs items={["index.ts", "schema.ts"]}>
+<CodeTab>
+```typescript copy
+const result = await client.products.update("gid://shopify/Product/1", {
+  fields: {
+    metafields: {
+      // description is the name of metafield
+      description: "Innovative Product #1"
+    }
+  },
+});
+```
+```typescript
+// return type
+const result: {
+  metafields: {
+    key: string;
+    type: MetafieldFieldType;
+    namespace: string;
+    ownerType: MetafieldOwnerType;
+    id: string;
+    value: string;
+  }[];
+}
+```
+</CodeTab>
+```typescript copy
+import { metafield } from "@drizzle-team/tento";
+
+export const descriptionMetafield = metafield({
+  name: "description", // this name will be used as key for metafield
+  key: "description",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  fieldDefinition: (f) => f.multiLineTextField(),
+});
+```
+</CodeTabs> 

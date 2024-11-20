@@ -1,0 +1,218 @@
+import Npm from '@mdx/Npm.astro';
+import Npx from '@mdx/Npx.astro';
+import Callout from '@mdx/Callout.astro';
+import Prerequisites from "@mdx/Prerequisites.astro";
+import CodeTabs from '@mdx/CodeTabs.astro';
+
+# Get Started with Tento
+
+<Prerequisites>
+  - **@shopify/shopify-api** - package for access for the Shopify Admin API - [read here](https://www.npmjs.com/package/@shopify/shopify-api)
+  - **dotenv** - package for managing environment variables - [read here](https://www.npmjs.com/package/dotenv)
+  - **tsx** - package for running TypeScript files - [read here](https://tsx.is/)
+</Prerequisites>
+
+#### Step 1 - Install dependencies
+<Npm>
+@drizzle-team/tento
+</Npm>
+
+#### Step 2 - Setup connection variables
+Create a `.env` file in the root of your project and add your Shopify Access Token variable:
+```plaintext copy
+SHOPIFY_ACCESS_TOKEN=
+SHOPIFY_SHOP_ID=
+```
+
+<Callout title='tips'>
+If you don't have an active session with `accessToken` variable yet and want to create one for testing, you can use our guide Get started with OAuth.
+
+The Get started with OAuth guide is available [here](/docs/get-started-with-oauth).
+</Callout>
+
+#### Step 3 - Declare schema file
+Create a `schema.ts` file and declare your metaobjects and metafields schema:
+
+<Callout title='info'>
+As of now Tento only supports one schema file.
+</Callout>
+
+```typescript copy filename="src/db/schema.ts"
+import { metaobject, metafield } from '@drizzle-team/tento';
+
+export const description = metafield({
+  name: "Description",
+  key: "description",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  fieldDefinition: (f) => f.multiLineTextField(),
+});
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+```
+<Callout title='tips'>
+If you don't have knowledge about Shopify metaobjects and metafields yet, or you want to see full possibilities for those, you can study them on Shopify.
+
+Metaobjects [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metaobject).  
+Metafields [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metafield).
+</Callout>
+
+#### Step 4 - Connect Tento client
+Create a `index.ts` file and initialize the connection:
+```typescript copy filename="src/index.ts"
+import 'dotenv/config';
+import '@shopify/shopify-api/adapters/web-api';
+import * as schema from './db/schema';
+import { createClient, tento } from '@drizzle-team/tento';
+
+const client = tento({
+  client: createClient({
+    shop: process.env.SHOPIFY_SHOP_ID!,
+    headers: {
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+    },
+  }),
+  schema,
+});
+```
+
+#### Step 5 - Setup Tento config file
+**Tento config** - a configuration file that is used by [Tento CLI](/docs/migrations#tentoconfigts) and contains all the information about your Shopify connection and schema files.
+
+Create a `tento.config.ts` file in the root of your project and add the following content:
+```typescript copy filename="tento.config.ts"
+import 'dotenv/config';
+import { defineConfig } from "@drizzle-team/tento/cli";
+
+export default defineConfig({
+  schemaPath: './src/schema.ts',
+  shop: process.env.SHOPIFY_SHOP_ID!,
+  headers: {
+    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN!,
+  },
+});
+```
+
+#### Step 6 - Applying changes to the Shopify
+You can directly apply changes to your Shopify store using the `tento push` command, or using client method `applySchema()`:
+<CodeTabs items={["CLI", "Client"]}>
+```bash copy
+npx tento push
+```
+```typescript copy filename="src/index.ts"
+import 'dotenv/config';
+import '@shopify/shopify-api/adapters/web-api';
+import * as schema from './db/schema';
+import { createClient, tento } from '@drizzle-team/tento';
+
+const client = tento({
+  client: createClient({
+    shop: process.env.SHOPIFY_SHOP_ID!,
+    headers: {
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+    },
+  }),
+  schema,
+});
+
+async function main() {
+  await client.applySchema();
+}
+
+main();
+```
+</CodeTabs>
+
+Read more about migration process in [documentation](/docs/migrations).
+
+#### Step 7 - Query the Shopify
+Let's **update** the `src/index.ts` file with queries to create, read, update, and delete designers
+```typescript copy filename="src/index.ts"
+import 'dotenv/config';
+import '@shopify/shopify-api/adapters/web-api';
+import * as schema from './db/schema';
+import { createClient, tento } from '@drizzle-team/tento';
+
+const client = tento({
+  client: createClient({
+    shop: process.env.SHOPIFY_SHOP_ID!,
+    headers: {
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+    },
+  }),
+  schema,
+});
+
+async function main() {
+  await client.applySchema();
+
+  const designer: typeof client.metaobjects.designer.$inferInsert = {
+    name: "John",
+    description: "John is designer",
+    website: "",
+  };
+
+  const createdDesigner = await client.metaobjects.designer.insert(designer);
+  console.log("New designer created!");
+
+  const designers = await client.metaobjects.designer.list({
+    first: 50
+  });
+  console.log('Getting first 50 designers from the Shopify: ', designers)
+  /*
+  const designers: {
+    items: {
+      _id: string;
+      _handle: string;
+      _displayName: string;
+      _updatedAt: Date;
+      name: string;
+      description: string | null;
+      website: string | null;
+    }[];
+    pageInfo: {
+      startCursor: string;
+      endCursor: string;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+    };
+  }
+  */
+
+  await client.metaobjects.designer.update(createdDesigner._id, {
+    fields: {
+      description: "John is designer!",
+    },
+  });
+  console.log("Designer info updated");
+
+  await client.metaobjects.designer.delete(createdDesigner._id);
+  console.log("Designer deleted");
+}
+```
+
+#### Step 8 - Run index.ts file
+To run any TypeScript files, you have several options, but let's stick with one: using `tsx`
+
+You've already installed `tsx`, so we can run our queries now
+
+**Run `index.ts` script**
+<Npx>
+  tsx src/index.ts
+</Npx>
