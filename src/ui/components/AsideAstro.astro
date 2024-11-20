@@ -1,6 +1,7 @@
 ---
 import type { IHeading, TreeNode } from "@/types";
 import CollapseToggleButton from "./CollapseToggleButton.astro";
+import { fieldDefinitions } from "@/data/field-definitions";
 
 
 interface Props {
@@ -9,6 +10,8 @@ interface Props {
   slug: string;
   forLanding?: boolean;
 }
+
+const fieldDefinitionsHref = Object.keys(fieldDefinitions)[0];
 
 
 const { headings, slug = "", tree, forLanding = false } = Astro.props;
@@ -101,10 +104,10 @@ let i = 0;
                         )}
                       </a>
                     )}
-                    {n.type === "withDialects" && (
+                    {n.type === "withFieldDefinitions" && (
                       <a
                         data-nav-index={i++}
-                        data-href={`/${t.name}/${n.name}`}
+                        href={`/${t.name}/${n.name}/${fieldDefinitionsHref}`}
                         class:list={[
                           isActive(`${t.name}/${n.name}`)
                             ? "nav-item--active"
@@ -193,10 +196,10 @@ let i = 0;
                 )}
               </a>
             )}
-            {n.type === "withDialects" && (
+            {n.type === "withFieldDefinitions" && (
               <a
                 data-nav-index={i++}
-                data-href={`/${t.name}/${n.name}`}
+                href={`/${t.name}/${n.name}/${fieldDefinitionsHref}`}
                 class:list={[
                   isActive(`${t.name}/${n.name}`)
                     ? "nav-item--active"

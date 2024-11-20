@@ -3,5 +3,6 @@
   ["components", "Components"],
   ["overview", "Overview"],
   ["migrations", "Migrations"],
-  ["queries", "Queries"]
+  ["queries", "Queries"],
+  ["field-definitions", "Field definitions"]
 ]

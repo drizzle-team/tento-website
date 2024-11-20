@@ -8,6 +8,8 @@ import Header from "./components/Header.astro";
 import DocsSidebar from "./DocsSidebar.astro";
 import RightAside from "./components/RightAside.astro";
 import EndOfContent from "./components/EndOfContent.astro";
+import FieldDefinitionsTabs from "./components/FieldDefinitionsTabs.astro";
+import { fieldDefinitions } from "@/data/field-definitions";
 
 interface Props {
   customTitle?: string;
@@ -22,6 +24,10 @@ const { tree, filteredHeadings, title } = await getContentTree({
   headings,
   slug,
 });
+
+const pageHasFieldDefinitions = Object.keys(fieldDefinitions).includes(
+  slug?.split("/").at(-1)!,
+);
 ---
 
 <!doctype html>
@@ -41,7 +47,9 @@ const { tree, filteredHeadings, title } = await getContentTree({
           customSlug={customSlug}
           headings={filteredHeadings}
         />
-        <div class="dialects-container"></div>
+        <div class="dialects-container">
+          {pageHasFieldDefinitions && <FieldDefinitionsTabs />}
+        </div>
         <div class="right-aside-container">
           <RightAside />
         </div>
@@ -49,6 +57,7 @@ const { tree, filteredHeadings, title } = await getContentTree({
     </div>
     <main class="documentation-container">
       <div class="documentation-content">
+        {pageHasFieldDefinitions && <div style="height: 52px" />}
         <slot />
         <EndOfContent />
       </div>

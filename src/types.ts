@@ -42,11 +42,7 @@ export interface StorageItem {
 
 export interface ICard {
   title: string;
-  imageSrc: ImageSrc;
-  description: string;
   href: string;
-  lightStyle?: SVGProps;
-  darkStyle?: SVGProps;
 }
 
 export interface ICards {

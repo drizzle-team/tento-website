@@ -1,15 +1,15 @@
 ---
-import { Image } from 'astro:assets';
-import notFound from '@/assets/images/not_found.webp';
-import houstonAstronaut from '@/assets/images/houston_astronaut.webp';
+import { Image } from "astro:assets";
+import notFound from "@/assets/images/not_found.webp";
+import houstonAstronaut from "@/assets/images/houston_astronaut.webp";
 
-import Layout from '../ui/Layout.astro';
+import Layout from "@/ui/Layout.astro";
 ---
 
-<Layout title="Tento">
+<Layout maxWidth={1024} title="Tento">
   <div class="wrap">
-    <Image class='not_found' src={notFound} alt="Not found"/>
-    <Image class="astronaut" src={houstonAstronaut} alt="Astronaut"/>
+    <Image class="not_found" src={notFound} alt="Not found" />
+    <Image class="astronaut" src={houstonAstronaut} alt="Astronaut" />
     <div class="content">
       <div class="text">
         <h1 class="title">404</h1>
@@ -83,7 +83,7 @@ import Layout from '../ui/Layout.astro';
     text-decoration: underline;
   }
 
-  @media screen and (max-width:768px) {
+  @media screen and (max-width: 768px) {
     .astronaut {
       transform: translateY(-192px);
     }
