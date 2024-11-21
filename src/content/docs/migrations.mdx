@@ -170,3 +170,83 @@ export const designer = metaobject({
 ```
 </Section>
 </Callout>
+
+## Client
+
+Tento also supports `apply` and `remove` **schema** definitions using client.
+
+#### Apply
+
+<br></br>
+| option            | default      | values              | description                                                                                                                                                     |
+| :------------     | :----------  | :----------         | :-----------------------------------                                                                                                                            |
+| `unknownEntities` | `ignore`     | `ignore`, `remove`  | helps define the scope of **metaobjects** and **metafields** to be migrated, preventing unnecessary downloads and avoiding the deletion of other existing items |
+```typescript copy
+import 'dotenv/config';
+import '@shopify/shopify-api/adapters/web-api';
+import * as schema from './db/schema';
+import { createClient, tento } from '@drizzle-team/tento';
+
+const client = tento({
+  client: createClient({
+    shop: process.env.SHOPIFY_SHOP_ID!,
+    headers: {
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+    },
+  }),
+  schema,
+});
+
+async function main() {
+  // 'ignore' strategy as default
+  await client.applySchema();
+
+  // you can specify explicitly configuration option you want
+  await client.applySchema({ unknownEntities: "ignore" });
+  await client.applySchema({ unknownEntities: "delete" });
+}
+
+main();
+```
+|                         |                                                                                                                                                                                                                                                               |
+| :---------------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------                                                                                            |
+| `ignore`                | means that only the **metaobjects** and **metafields** from your definitions **schema** will be processed.                                                                                                                                                    |
+| `delete`                | means that all **metaobjects** and **metafields** will be processed. If you select this option and run command, we will create/ update your **schema** in **Shopify** and remove all **metaobjects** and **metafields** that do not exist in your **schema**. |
+
+#### Remove
+
+<br></br>
+| option            | default      | values              | description                                                                                                                                                     |
+| :------------     | :----------  | :----------         | :-----------------------------------                                                                                                                            |
+| `unknownEntities` | `ignore`     | `ignore`, `remove`  | helps define the scope of **metaobjects** and **metafields** to be migrated, preventing unnecessary downloads and avoiding the deletion of other existing items |
+```typescript copy
+import 'dotenv/config';
+import '@shopify/shopify-api/adapters/web-api';
+import * as schema from './db/schema';
+import { createClient, tento } from '@drizzle-team/tento';
+
+const client = tento({
+  client: createClient({
+    shop: process.env.SHOPIFY_SHOP_ID!,
+    headers: {
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+    },
+  }),
+  schema,
+});
+
+async function main() {
+  // 'ignore' strategy as default
+  await client.removeSchema();
+
+  // you can specify explicitly configuration option you want
+  await client.removeSchema({ unknownEntities: "ignore" });
+  await client.removeSchema({ unknownEntities: "delete" });
+}
+
+main();
+```
+|                         |                                                                                                                                                                                                                                                               |
+| :---------------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------                                                                                            |
+| `ignore`                | means that only the **metaobjects** and **metafields** from your definitions **schema** will be processed.                                                                                                                                                    |
+| `delete`                | means that all **metaobjects** and **metafields** will be processed. If you select this option and run command, we will create/ update your **schema** in **Shopify** and remove all **metaobjects** and **metafields** that do not exist in your **schema**. |
