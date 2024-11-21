@@ -82,7 +82,7 @@ const result: {
 **Get excluding `id`, `handle`, `updatedAt`, `description`:**
 <CodeTab>
 ```typescript
-const result = await client.metaobjects.designer.list({
+const result = await client.products.list({
   fields: {
     id: false,
     handle: false,
@@ -152,3 +152,227 @@ const result: {
 </CodeTab>
 
 ## Filters
+
+Tento supports all pecific filters what Shopify has, see [here](https://shopify.dev/docs/api/usage/search-syntax).  
+Especially for products querying Tento supports all Shopify [Products Query filters](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/products).
+
+#### eq
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: {
+   title: "product #1"
+  },
+});
+```
+
+#### not
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: {
+   title: {
+      $not: "product #1"
+    }
+  },
+});
+```
+
+#### gt
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: {
+    id: {
+      $gt: "1"
+    }
+  },
+});
+```
+
+#### gte
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: {
+    id: {
+      $gte: "1"
+    }
+  },
+});
+```
+
+#### lt
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: {
+    id: {
+      $lt: "1"
+    }
+  },
+});
+```
+
+#### lte
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: {
+    id: {
+      $lte: "1"
+    }
+  },
+});
+```
+
+#### raw
+
+```typescript
+const result = await client.products.list({
+  query: {
+   $raw: "id:1"
+  },
+});
+```
+
+#### and
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: [
+      {
+        id: '1'
+      },
+      {
+        id: {
+          $lte: "2",
+        },
+      },
+    ],
+});
+```
+
+#### or
+Supported fields to filter  
+|               |                                                                                                                                |
+| :------------ | :-----------------------------------                                                                                           |
+| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
+|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
+|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
+|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+```typescript
+const result = await client.products.list({
+  query: {
+    $or: [
+      {
+        id: "1",
+      },
+      {
+        id: {
+          $gt: "1",
+        },
+      },
+    ],
+  },
+});
+```
+
+## Pagination
+
+Tento supports [Shopify pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
+
+#### first
+
+Supported pagination options  
+| option        | default    | description                                          |
+| :------------ | :----------| :-----------------------------------                 |
+| `first`       | 50         | requested number of `nodes` for each page.           |
+| `after`       | -          | cursor to retrieve `nodes` after in the connection.  |
+```typescript
+const result = await client.products.list({
+  first: 10,
+  after: "In0="
+});
+```
+
+#### last
+
+Supported pagination options  
+| option        | default    | description                                          |
+| :------------ | :----------| :-----------------------------------                 |
+| `last`        | -          | requested number of `nodes` for each page.           |
+| `before`      | -          | cursor to retrieve `nodes` after in the connection.  |
+<Callout type="warning">
+To provide `last` option you must specify `before` cursor to prevent exceptions.
+</Callout>
+```typescript
+const result = await client.products.list({
+  last: 10,
+  before: "In0="
+});
+```
+
+## Sort
+
+Tento supports Shopify [Products query sort keys](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/products)
+Supported sort keys
+|               |                                                                                                                      |
+| :------------ | :-----------------------------------                                                                                 |
+| keys          | `id`, `created_at`, `inventory_total`, `product_type`, `published_at`, `relevance`, `title` ,`updated_at` , `vendor` |
+```typescript
+const result = await client.products.list({
+  sortKey: 'id'
+});
+```
+<Callout type="info">
+You can control sort direction using `reverse` option. Default value is `false`.
+</Callout>
+```typescript
+const result = await client.products.list({
+  sortKey: 'id',
+  reverse: true,
+});
+```
