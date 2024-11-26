@@ -1,11 +1,14 @@
 import CodeTabs from '@mdx/CodeTabs.astro';
 import CodeTab from '@mdx/CodeTab.astro';
+import Callout from '@mdx/Callout.astro';
 
 # Tento Metaobject Insert
 
 Tento represents Shopify [Create Metaobject mutation](https://shopify.dev/docs/api/admin-graphql/2024-10/mutations/metaobjectCreate)
-
-Tento provides you the most GraphQL-like way to insert rows into the Shopify.
+<br></br>
+<Callout type="info">
+You can create type for a particular Metaobject Definition using `typeof designer.$inferInsert` syntax
+</Callout>
 <CodeTabs items={["index.ts", "schema.ts"]}>
 <CodeTab>
 ```typescript copy
@@ -14,9 +17,10 @@ import * as schema from "./schema";
 
 const client = tento({ schema });
 
-const result = await client.metaobjects.designer.insert({
-  name: "Alex",
-});
+type NewDesigner = typeof client.metaobjects.designer.$inferInsert;
+const newDesigner: NewDesigner = { name: "Alex" };
+
+const result = await client.metaobjects.designer.insert(newDesigner);
 ```
 ```typescript
 // return type
@@ -52,26 +56,4 @@ export const designer = metaobject({
   }),
 });
 ```
-</CodeTabs>  
-
-If you need insert type for a particular Metaobject Definition you can use typeof designer.$inferInsert syntax.
-<CodeTab>
-```typescript
-type NewDesigner = typeof client.metaobjects.designer.$inferInsert;
-
-const newDesigner: NewDesigner = { name: "Alex" };
-const result = await client.metaobjects.designer.insert(designer);
-```
-```typescript
-// return type
-const result: {
-  _id: string;
-  _handle: string;
-  _displayName: string;
-  _updatedAt: Date;
-  name: string;
-  description: string | null;
-  website: string | null;
-}
-```
-</CodeTab>
+</CodeTabs>

@@ -7,7 +7,7 @@ import Callout from '@mdx/Callout.astro';
 Tento represents Shopify [Products query](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/products)
 
 <Callout type="info">
-If don't provide partial fields selection **Tento** will return all possible fields for **Product**
+If you don't provide partial fields selection **Tento** will return all possible fields for **Product**
 </Callout>
 <CodeTab>
 ```typescript
@@ -53,7 +53,6 @@ Tento performs partial selects on the query level, no additional data is transfe
 </Callout>
 
 **Get including only with just `id`, `title`:**
-<CodeTab>
 ```typescript
 const result = await client.metaobjects.products.list({
   fields: {
@@ -62,25 +61,8 @@ const result = await client.metaobjects.products.list({
   },
 });
 ```
-```typescript
-// result type
-const result: {
-  items: {
-    id: string;
-    title: string;
-  }[];
-  pageInfo: {
-    startCursor: string;
-    endCursor: string;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
-}
-```
-</CodeTab>
 \
 **Get excluding `id`, `handle`, `updatedAt`, `description`:**
-<CodeTab>
 ```typescript
 const result = await client.products.list({
   fields: {
@@ -91,42 +73,11 @@ const result = await client.products.list({
   },
 });
 ```
-```typescript
-// result type
-const result: {
-  items: {
-    createdAt: Date;
-    isGiftCard: boolean;
-    category: {
-      fullName: string;
-      id: string;
-      isLeaf: boolean;
-      isRoot: boolean;
-      name: string;
-      ancestorIds: number[];
-      childrenIds: number[];
-      isArchived: boolean;
-      level: number;
-      parentId?: number | undefined;
-    } | undefined;
-    ... 28 more ...;
-    vendor: string;
-  }[];
-  pageInfo: {
-    startCursor: string;
-    endCursor: string;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
-}
-```
-</CodeTab>
 \
 **Exclude and Include fields in the same query:**
 > When both `true` and `false` select options are present, all `false` options are ingored.
 
 If you include the `title` field and exclude the `id` field, `id` exclusion will be redundant, all fields apart from `title` would be excluded anyways.
-<CodeTab>
 ```typescript
 const result = await client.metaobjects.products.list({
   fields: {
@@ -135,21 +86,6 @@ const result = await client.metaobjects.products.list({
   },
 });
 ```
-```typescript
-// result type
-const result: {
-  items: {
-    title: string;
-  }[];
-  pageInfo: {
-    startCursor: string;
-    endCursor: string;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
-}
-```
-</CodeTab>
 
 ## Filters
 
@@ -284,7 +220,7 @@ Supported fields to filter
 const result = await client.products.list({
   query: [
       {
-        id: '1'
+        id: "1"
       },
       {
         id: {
@@ -364,7 +300,7 @@ Supported sort keys
 | keys          | `id`, `created_at`, `inventory_total`, `product_type`, `published_at`, `relevance`, `title` ,`updated_at` , `vendor` |
 ```typescript
 const result = await client.products.list({
-  sortKey: 'id'
+  sortKey: "id"
 });
 ```
 <Callout type="info">
@@ -372,7 +308,7 @@ You can control sort direction using `reverse` option. Default value is `false`.
 </Callout>
 ```typescript
 const result = await client.products.list({
-  sortKey: 'id',
+  sortKey: "id",
   reverse: true,
 });
 ```

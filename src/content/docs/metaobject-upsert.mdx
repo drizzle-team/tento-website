@@ -6,7 +6,8 @@ import CodeTab from '@mdx/CodeTab.astro';
 Tento represents Shopify [Upsert Metaobject mutation](https://shopify.dev/docs/api/admin-graphql/2024-10/mutations/metaobjectUpsert)
 
 The object that you pass to update should have keys that match field names in your Metaobject Definition schema. 
-If no matching **metaobject** is found, a new **metaobject** is created with the provided input values.
+If no matching **metaobject** is found, a new **metaobject** is created with the provided input values. You can also update you can provide `capabilities` 
+for metaobject, to do so you can provide `publishable` capability input.
 
 <CodeTabs items={["index.ts", "schema.ts"]}>
 <CodeTab>
@@ -19,6 +20,11 @@ const client = tento({ schema });
 const result = await client.metaobjects.designer.upsert("designer-handle", {
   fields: {
     name: "Alex",
+  },
+  capabilities: {
+    publishable: {
+      status: "ACTIVE", // ACTIVE | DRAFT
+    },
   },
 });
 ```
@@ -56,32 +62,4 @@ export const designer = metaobject({
   }),
 });
 ```
-</CodeTabs> 
-
-As for update you can provide `capabilities` for metaobject, to do so you can provide `publishable` capability input:
-<CodeTab>
-```typescript copy
-const result = await client.metaobjects.designer.upsert("designer-handle", {
-  fields: {
-    name: "Alex",
-  },
-  capabilities: {
-    publishable: {
-      status: "ACTIVE", // ACTIVE | DRAFT
-    },
-  },
-});
-```
-```typescript
-// return type
-const result: {
-  _id: string;
-  _handle: string;
-  _displayName: string;
-  _updatedAt: Date;
-  name: string;
-  description: string | null;
-  website: string | null;
-}
-```
-</CodeTab>
+</CodeTabs>

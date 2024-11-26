@@ -22,7 +22,7 @@ const client = tento({ schema });
 const result = await client.metaobjects.designer.list();
 ```
 ```typescript
-{
+const result = {
   items: [
     {
       _id: "gid://shopify/Metaobject/1",
@@ -31,7 +31,7 @@ const result = await client.metaobjects.designer.list();
       _updatedAt: "2024-11-19T12:37:37.000Z",
       name: "Tento",
       description: "Made by Drizzle team",
-      website: "https://www.google.com/",
+      website: "https://drizzle.team/",
     },
   ],
   pageInfo: {
@@ -60,61 +60,6 @@ export const designer = metaobject({
     }),
     website: f.url({
       name: "Website",
-    }),
-  }),
-});
-```
-</CodeTabs>
-## Querying
-You need to provide all `metaobject definitions` from your schema file upon `tento()` initialization and then just use `client.metaobjects` API.
-
-<CodeTabs items={["index.ts", "schema.ts"]}>
-```typescript copy
-import { tento } from "@drizzle-team/tento";
-import * as schema from "./schema";
-
-const client = tento({ schema });
-
-await client.metaobjects.designer.list(...);
-```
-```typescript copy
-import { metaobject, metafield } from "@drizzle-team/tento";
-
-export const designer = metaobject({
-  name: "Designer",
-  type: "designer",
-  fieldDefinitions: (f) => ({
-    name: f.singleLineTextField({
-      name: "Title",
-      required: true,
-      validations: (v) => [v.min(1), v.max(50)],
-    }),
-    description: f.multiLineTextField({
-      name: "Description",
-    }),
-    website: f.url({
-      name: "Website",
-    }),
-  }),
-});
-
-export const user = metaobject({
-  name: "User",
-  type: "user",
-  fieldDefinitions: (f) => ({
-    name: f.singleLineTextField({
-      name: "Name",
-      required: true,
-      validations: (v) => [v.min(3), v.max(50)],
-    }),
-    lastName: f.singleLineTextField({
-      name: "Last name",
-      required: true,
-      validations: (v) => [v.min(3), v.max(50)],
-    }),
-    age: f.integer({
-      name: "Age",
-      validations: (v) => [v.min(18)],
     }),
   }),
 });
@@ -179,7 +124,6 @@ Tento performs partial selects on the query level, no additional data is transfe
 
 **Get including only with just `_id`, `name`:**
 <CodeTabs items={["List query", "Get query"]}>
-<CodeTab>
 ```typescript
 const result = await client.metaobjects.designer.list({
   fields: {
@@ -189,42 +133,16 @@ const result = await client.metaobjects.designer.list({
 });
 ```
 ```typescript
-// result type
-const result: {
-  items: {
-    _id: string;
-    name: string;
-  }[];
-  pageInfo: {
-    startCursor: string;
-    endCursor: string;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
-}
-```
-</CodeTab>
-<CodeTab>
-```typescript
 const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1", {
   _id: true,
   name: true,
 });
 ```
-```typescript
-// result type
-const result: {
-  _id: string;
-  name: string;
-} | undefined
-```
-</CodeTab>
 </CodeTabs>
 
 \
 **Get excluding `_id`, `_handle`, `_displayName`, `_updatedAt`, `description`:**
 <CodeTabs items={["List query", "Get query"]}>
-<CodeTab>
 ```typescript
 const result = await client.metaobjects.designer.list({
   fields: {
@@ -237,23 +155,6 @@ const result = await client.metaobjects.designer.list({
 });
 ```
 ```typescript
-// result type
-const result: {
-  items: {
-    name: string;
-    website: string | null;
-  }[];
-  pageInfo: {
-    startCursor: string;
-    endCursor: string;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
-}
-```
-</CodeTab>
-<CodeTab>
-```typescript
 const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1", {
   _id: false,
   _handle: false,
@@ -262,14 +163,6 @@ const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1
   description: false,
 });
 ```
-```typescript
-// result type
-const result: {
-  name: string;
-  website: string | null;
-} | undefined
-```
-</CodeTab>
 </CodeTabs>
 
 \
@@ -278,7 +171,6 @@ const result: {
 
 If you include the `name` field and exclude the `_id` field, `_id` exclusion will be redundant, all fields apart from `name` would be excluded anyways.
 <CodeTabs items={["List query", "Get query"]}>
-<CodeTab>
 ```typescript
 const result = await client.metaobjects.designer.list({
   fields: {
@@ -288,34 +180,11 @@ const result = await client.metaobjects.designer.list({
 });
 ```
 ```typescript
-// result type
-const result: {
-  items: {
-    name: string;
-  }[];
-  pageInfo: {
-    startCursor: string;
-    endCursor: string;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
-}
-```
-</CodeTab>
-<CodeTab>
-```typescript
 const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1", {
   _id: false,
   name: true,
 });
 ```
-```typescript
-// result type
-const result: {
-  name: string;
-} | undefined
-```
-</CodeTab>
 </CodeTabs>
 
 ## Filters
@@ -430,7 +299,7 @@ Supported fields to filter
 const result = await client.metaobjects.designer.list({
   query: [
       {
-        id: '1'
+        id: "1"
       },
       {
         id: {
@@ -507,7 +376,7 @@ Supported sort keys
 | keys     | `id`, `type`, `updated_at`, `display_name`           |
 ```typescript
 const result = await client.metaobjects.designer.list({
-  sortKey: 'id'
+  sortKey: "id"
 });
 ```
 <Callout type="info">
@@ -515,7 +384,7 @@ You can control sort direction using `reverse` option. Default value is `false`.
 </Callout>
 ```typescript
 const result = await client.metaobjects.designer.list({
-  sortKey: 'id',
+  sortKey: "id",
   reverse: true,
 });
 ```

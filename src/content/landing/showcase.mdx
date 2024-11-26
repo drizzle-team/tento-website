@@ -1,197 +1,292 @@
 import BigCodeTabs from "@mdx/BigCodeTabs.astro";
+import CodeTab from '@mdx/CodeTab.astro';
+import CodeTabs from '@mdx/CodeTabs.astro';
+import Npx from '@mdx/Npx.astro';
 
 <BigCodeTabs
   items={[
     "Declare schema",
     "Shopify clients",
-    "Fetch client",
-    "Runtime migrations",
+    "OAuth",
     "Schema pull",
     "Schema push",
-    "OAuth",
+    "Runtime migrations",
     "Queries filter",
+    "Queries pagination",
   ]}
 >
 {/* Declare schema */}
 ```ts
-import { metaobject } from '@drizzle-team/tento';
+import { metaobject, metafield } from '@drizzle-team/tento';
 
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
   fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
+    name: f.singleLineTextField({
+      name: "Title",
       required: true,
-      validations: (v) => [v.min(5), v.max(100)],
+      validations: (v) => [v.min(1), v.max(50)],
     }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
+    description: f.multiLineTextField({
+      name: "Description",
     }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
+    website: f.url({
+      name: "Website",
     }),
   }),
+});
+
+export const designer_reference = metafield({
+  name: "Designer",
+  key: "designer",
+  namespace: "custom",
+  ownerType: "PRODUCT",
+  useAsCollectionCondition: true,
+  visibleToStorefrontApi: true,
+  pin: true,
+  fieldDefinition: (f) =>
+    f.metaobjectReference({
+      validations: (v) => [v.metaobjectDefinitionType(() => designer.type)],
+    }),
 });
 ```
 {/* Shopify clients */}
+<CodeTab>
 ```ts
-~ npx tento push
+import 'dotenv/config';
+import '@shopify/shopify-api/adapters/web-api';
+import * as schema from './db/schema';
+import { createClient, tento } from '@drizzle-team/tento';
 
-- Updated metaobject definition "ORM"
-✅ All changes applied
-```
-{/* Fetch client */}
-```ts
-import { metaobject } from '@drizzle-team/tento';
-
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
-  fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
-      required: true,
-      validations: (v) => [v.min(5), v.max(100)],
-    }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
-    }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
+const client = tento({
+  client: createClient({
+    shop: process.env.SHOPIFY_SHOP_ID!,
+    headers: {
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+    },
   }),
+  schema,
 });
 ```
+```ts
+import "dotenv/config";
+import "@shopify/shopify-api/adapters/node";
+import { Session, shopifyApi } from "@shopify/shopify-api";
+import * as schema from "./db/schema";
+import { tento } from "@drizzle-team/tento";
+
+const shopify = shopifyApi({...});
+const session: Session = {...};
+const gqlClient = new shopify.clients.Graphql({
+  session, // shopify session
+});
+
+const client = tento({ client: gqlClient, schema });
+```
+</CodeTab>
+
+{/* OAuth */}
+```typescript
+import "dotenv/config";
+import "@shopify/shopify-api/adapters/node";
+import express from "express";
+import {
+  CookieNotFound,
+  InvalidOAuthError,
+  LATEST_API_VERSION,
+  Session,
+  shopifyApi,
+} from "@shopify/shopify-api";
+import * as schema from "./db/schema";
+import { tento } from "@drizzle-team/tento";
+
+const shopify = shopifyApi({
+  apiKey: process.env.SHOPIFY_API_KEY!,
+  apiSecretKey: process.env.SHOPIFY_API_SECRET_KEY!,
+  scopes: process.env.SHOPIFY_SCOPES!.split(/,\s*/),
+  hostName: "***.ngrok-free.app",
+  hostScheme: "https",
+  apiVersion: LATEST_API_VERSION,
+  isEmbeddedApp: true,
+});
+
+async function main() {
+  const app = express();
+
+  app.use(express.json());
+
+  let session: Session | undefined = undefined;
+  const SHOPIFY_SHOP = process.env.SHOPIFY_SHOP!;
+
+  app.get("/auth", async (req, res) => {
+    await shopify.auth.begin({
+      shop: shopify.utils.sanitizeShop(SHOPIFY_SHOP, true)!,
+      callbackPath: "/auth/callback",
+      isOnline: false,
+      rawRequest: req,
+      rawResponse: res,
+    });
+  });
+
+  app.get("/auth/callback", async (req, res) => {
+    try {
+      const callback = await shopify.auth.callback({
+        rawRequest: req,
+        rawResponse: res,
+      });
+      session = callback.session;
+
+      return res.redirect("/");
+    } catch (e: any) {
+      if (e instanceof InvalidOAuthError) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: e.message,
+          code: 400,
+        });
+      }
+      if (e instanceof CookieNotFound) {
+        await shopify.auth.begin({
+          shop: shopify.utils.sanitizeShop(SHOPIFY_SHOP, true)!,
+          callbackPath: "/auth/callback",
+          isOnline: false,
+          rawRequest: req,
+          rawResponse: res,
+        });
+      }
+    }
+  });
+
+  app.get("/", async (req, res) => {
+    if (!session) {
+      return res.redirect("/auth");
+    }
+
+    const gqlClient = new shopify.clients.Graphql({
+      session,
+    });
+
+    const client = tento({ client: gqlClient, schema });
+
+    return res.json({ success: true });
+  });
+
+  app.listen(5000, () => {
+    console.log("App listening on the port 5000");
+  });
+}
+
+main();
+```
+
 {/* Schema pull */}
+<CodeTab>
+```bash
+tento pull
+```
 ```ts
-import { metaobject } from '@drizzle-team/tento';
+import 'dotenv/config';
+import { defineConfig } from "@drizzle-team/tento/cli";
 
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
-  fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
-      required: true,
-      validations: (v) => [v.min(5), v.max(100)],
-    }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
-    }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
-  }),
+export default defineConfig({
+  schemaPath: './src/schema.ts',
+  shop: process.env.SHOPIFY_SHOP_ID!,
+  headers: {
+    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN!,
+  },
 });
 ```
+</CodeTab>
 {/* Schema push */}
+<CodeTab>
+```bash
+tento push
+```
 ```ts
-import { metaobject } from '@drizzle-team/tento';
+import 'dotenv/config';
+import { defineConfig } from "@drizzle-team/tento/cli";
 
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
-  fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
-      required: true,
-      validations: (v) => [v.min(5), v.max(100)],
-    }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
-    }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
-  }),
+export default defineConfig({
+  schemaPath: './src/schema.ts',
+  shop: process.env.SHOPIFY_SHOP_ID!,
+  headers: {
+    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN!,
+  },
 });
 ```
+</CodeTab>
+
 {/* Runtime migrations */}
 ```ts
-import { metaobject } from '@drizzle-team/tento';
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./db/schema";
 
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
-  fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
-      required: true,
-      validations: (v) => [v.min(5), v.max(100)],
-    }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
-    }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
-  }),
-});
-```
-{/* OAuth */}
-```ts
-import { metaobject } from '@drizzle-team/tento';
+const client = tento({ client: {...}, schema });
 
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
-  fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
-      required: true,
-      validations: (v) => [v.min(5), v.max(100)],
-    }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
-    }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
-  }),
-});
+await client.applySchema();
+await client.removeSchema();
 ```
+
 {/* Queries filter */}
 ```ts
-import { metaobject } from '@drizzle-team/tento';
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./db/schema";
 
-export const designers = metaobject({
-  name: 'Designer',
-  type: 'designer',
-  fieldDefinitions: (f) => ({
-    fullName: f.singleLineTextField({
-      name: 'Full Name',
-      required: true,
-      validations: (v) => [v.min(5), v.max(100)],
-    }),
-    description: f.singleLineTextField({
-      name: 'Description',
-      required: true,
-      validations: (v) => [v.min(5), v.max(300)],
-    }),
-    link: f.url(({
-      name: 'Link',
-      validations: (v) => [v.allowedDomains(["github.com"])],
-    }),
-  }),
+const client = tento({ client: {...}, schema });
+
+const designers = await client.metaobjects.designer.list({
+  first: 50,
+	sortKey: "display_name",
+	query: {
+	  updatedAt: {
+	    $gt: "2024-01-01"
+	  }
+	}
 });
+
+const products = await client.products.list({
+  first: 100,
+  sortKey: "id",
+  fields: {
+    id: true,
+    title: true
+    metafields: true,
+  },
+  query: {
+    tag: "tento",
+  },
+});
+```
+
+{/* Queries pagintion */}
+```ts
+import { tento } from "@drizzle-team/tento";
+import * as schema from "./db/schema";
+
+const client = tento({ client: {...}, schema });
+
+const designers = client.metaobjects.designer.list({
+  first: 50,
+	sortKey: "display_name",
+	query: {
+	  updatedAt: {
+	    $gt: "2024-01-01"
+	  }
+	}
+});
+
+if (designers.pageInfo.hasNextPage) {
+  const nextDesigners = await client.metaobjects.designer.list({
+    first: 50,
+    after: designers.pageInfo.endCursor,
+    query: {
+      updatedAt: {
+        $gt: "2024-01-01",
+      },
+    },
+  });
+}
+
 ```
 </BigCodeTabs>

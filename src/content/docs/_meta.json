@@ -1,12 +1,12 @@
 [
   "Meet Tento",
-  ["overview", "Overview"],
   ["get-started", "Get started"],
   ["get-started-with-oauth", "Get started with OAuth"],
-
-  "Fundamentals",
   ["schema", "Schema"],
   ["migrations", "Migrations"],
+
+  "Manage schema",
+  ["field-definitions", "Field definitions"],
 
   "Metaobjects",
   ["metaobject-query", "Query"],
@@ -23,9 +23,6 @@
   ["product-query", "Query"],
   ["product-update", "Update"],
 
-  "Common API",
-  ["job-query", "Job"],
-  
-  "Manage schema",
-  ["field-definitions", "Field definitions"]
+  "Common Objects",
+  ["job-query", "Job"] 
 ]
