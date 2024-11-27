@@ -7,7 +7,7 @@ import Section from '@mdx/Section.astro';
 
 Tento use all declared Shopify definitions, you can find all of them [here](https://shopify.dev/docs/apps/build/custom-data/metafields/list-of-data-types)
 
-###### single_line_text_field
+### single_line_text_field
 `string`  
 A single-line text field. String value types can store up to five million characters.
 
@@ -69,7 +69,7 @@ field: f.singleLineTextField({
 </Callout>
 
 
-###### list.single_line_text_field
+### list.single_line_text_field
 `string[]`  
 A list of single-line text fields.
 
@@ -99,7 +99,7 @@ field: f.singleLineTextList({
 ```
 
 
-###### multi_line_text_field
+### multi_line_text_field
 `string`  
 A multi-line text field. String value types can store up to five million characters.
 
@@ -153,8 +153,9 @@ field: f.multiLineTextField({
 ```
 </Callout>
 
+## ---
 
-###### number_decimal
+### number_decimal
 `string`  
 A number with decimal places in the range of +/-9999999999999.999999999. String value types can store up to five million characters.
 
@@ -209,7 +210,7 @@ field: f.decimal({
 </Callout>
 
 
-###### list.number_decimal
+### list.number_decimal
 `string[]`  
 A list of numbers with decimal places in the range of +/-9999999999999.999999999.
 
@@ -238,8 +239,9 @@ field: f.decimalList({
 })
 ```
 
+## ---
 
-###### url
+### url
 `string`  
 A URL with one of the allowed schemes: `https`, `http`, `mailto`, `sms`, `tel`. String value types can store up to five million characters.
 
@@ -280,7 +282,7 @@ field: f.url({
 </Callout>
 
 
-###### list.url
+### list.url
 `string[]`  
 A list of URLs with one of the allowed schemes: `https`, `http`, `mailto`, `sms`, `tel`.
 
@@ -309,8 +311,9 @@ field: f.urlList({
 })
 ```
 
+## ---
 
-###### number_integer
+### number_integer
 `integer`  
 A whole number in the range of +/-9,007,199,254,740,991.
 
@@ -358,7 +361,7 @@ field: f.integer({
 </Callout>
 
 
-###### list.number_integer
+### list.number_integer
 `string[]`  
 A list of whole numbers in the range of +/-9,007,199,254,740,991.
 
@@ -387,8 +390,9 @@ field: f.integerList({
 })
 ```
 
+## ---
 
-###### date
+### date
 `string`  
 A date in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone. String value types can store up to five million characters.
 
@@ -444,7 +448,7 @@ field: f.date({
 </Callout>
 
 
-###### list.date
+### list.date
 `string[]`  
 A list of dates in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone.
 
@@ -473,8 +477,9 @@ field: f.dateList({
 })
 ```
 
+## ---
 
-###### date_time
+### date_time
 `string`  
 A date and time in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone. Defaults to Greenwich Mean Time (GMT). String value types can store up to five million characters.
 
@@ -530,7 +535,7 @@ field: f.dateTime({
 </Callout>
 
 
-###### list.date_time
+### list.date_time
 `string[]`  
 A list of dates and times in [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format without a presumed timezone. Defaults to Greenwich Mean Time (GMT).
 
@@ -559,8 +564,9 @@ field: f.dateTimeList({
 })
 ```
 
+## ---
 
-###### dimension
+### dimension
 `json`  
 A value and a unit of length. Valid unit values: `in`, `ft`, `yd`, `mm`, `cm`, `m`
 
@@ -614,7 +620,7 @@ field: f.dimension({
 </Callout>
 
 
-###### list.dimension
+### list.dimension
 `json[]`  
 A list of values and a unit of length. Valid unit values: `in`, `ft`, `yd`, `mm`, `cm`, `m`
 
@@ -643,8 +649,9 @@ field: f.dimensionList({
 })
 ```
 
+## ---
 
-###### volume
+### volume
 `json`  
 A value and a unit of volume. Valid unit values: `ml`, `cl`, `l`, `m3` (cubic meters), `us_fl_oz`, `us_pt`, `us_qt`, `us_gal`, `imp_fl_oz`, `imp_pt`, `imp_qt`, `imp_gal`.
 
@@ -698,7 +705,7 @@ field: f.volume({
 </Callout>
 
 
-###### list.volume
+### list.volume
 `json[]`  
 A list of values and a unit of volume. Valid unit values: `ml`, `cl`, `l`, `m3` (cubic meters), `us_fl_oz`, `us_pt`, `us_qt`, `us_gal`, `imp_fl_oz`, `imp_pt`, `imp_qt`, `imp_gal`.
 
@@ -727,8 +734,9 @@ field: f.volumeList({
 })
 ```
 
+## ---
 
-###### weight
+### weight
 `json`  
 A value and a unit of weight. Valid unit values: `oz`, `lb`, `g`, `kg`
 
@@ -782,7 +790,7 @@ field: f.weight({
 </Callout>
 
 
-###### list.weight
+### list.weight
 `json[]`  
 A list of values and a unit of weight. Valid unit values: `oz`, `lb`, `g`, `kg`
 
