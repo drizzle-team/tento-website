@@ -6,13 +6,8 @@ import LinksList from "@mdx/LinksList.astro"
 Tento lets you define a schema in TypeScript with **metaobject** and **metafield** models. 
 When you define your schema, it serves as the source of truth for future modifications in queries
 and migrations.
+> Note: Now you can declare schema **only** in single file.
 
-## Organize your schema files 
-You can declare your schema directly in TypeScript for now **only** in a single `schema.ts` file wherever you prefer!  
-
-> Note: You can name your schema file whatever you like. For example, it could be `definitions.ts`, or something else.
-
-Example:
     ```plaintext
 📦 <project root>
  └ 📂 src
@@ -20,9 +15,8 @@ Example:
        └ 📜 schema.ts
     ```
 
-In the Tento you can also specify `tento.config.ts` file for CLI migrations. In the config file you need to specify the path to your schema file. With this configuration, Tento will 
-read from the `schema.ts` file and use this information during the migration process. For more information 
-about the `tento.config.ts` file and migrations, please check: [link](/docs/tento-cli-overview)
+You can also specify `tento.config.ts` file for CLI migrations. In the config file you need to specify the path to your schema file. With this configuration, Tento will 
+read from the `schema.ts` file and use this information during the migration process.
 ```ts
 import { defineConfig } from "@drizzle-team/tento/cli";
 
@@ -34,6 +28,7 @@ export default defineConfig({
   },
 });
 ```
+For more information about the `tento.config.ts` file and migrations, please check: [link](/docs/migrations#overview).
 
 ## **Metaobject schema declaration**
 A Metaobject should be defined with at least `name`, `type`, `fieldDefinitions()` fields.

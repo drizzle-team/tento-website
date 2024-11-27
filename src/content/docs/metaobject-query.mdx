@@ -72,6 +72,24 @@ Tento represents Shopify [Metaobjects query](https://shopify.dev/docs/api/admin-
 <CodeTab>
 ```typescript
 const result = await client.metaobjects.designer.list();
+
+await client.metaobjects.designer.list({
+  first: 50,
+  sortKey: "display_name",
+  query: {
+    updatedAt: {
+      $gt: "2024-01-01",
+    },
+  },
+});
+
+await client.metaobjects.designer.list({
+  fields: {
+	  _id: true,
+	  name: true,
+	  website: true,
+	}
+});
 ```
 ```typescript
 // result type
@@ -101,6 +119,12 @@ Tento represents Shopify [Metaobject query](https://shopify.dev/docs/api/admin-g
 <CodeTab>
 ```typescript
 const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1");
+
+await client.metaobjects.designer.get("gid://shopify/Metaobject/1", {
+	_id: true,
+	name: true,
+	website: true,
+});
 ```
 ```typescript
 // return type
@@ -117,13 +141,11 @@ const result: {
 </CodeTab>
 
 ## Partial fields select
-`fields` parameter lets you include or omit fields you want to get from Shopify.
-<Callout type="info">
-Tento performs partial selects on the query level, no additional data is transferred from the Shopify.
-</Callout>
+`fields` parameter lets you include or omit fields you want to get from Shopify, Tento performs partial selects on the query level, 
+no additional data is transferred from the Shopify.
 
-**Get including only with just `_id`, `name`:**
-<CodeTabs items={["List query", "Get query"]}>
+<CodeTabs items={["Include", "Exclude", "Both"]}>
+<CodeTab>
 ```typescript
 const result = await client.metaobjects.designer.list({
   fields: {
@@ -138,11 +160,8 @@ const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1
   name: true,
 });
 ```
-</CodeTabs>
-
-\
-**Get excluding `_id`, `_handle`, `_displayName`, `_updatedAt`, `description`:**
-<CodeTabs items={["List query", "Get query"]}>
+</CodeTab>
+<CodeTab>
 ```typescript
 const result = await client.metaobjects.designer.list({
   fields: {
@@ -163,14 +182,9 @@ const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1
   description: false,
 });
 ```
-</CodeTabs>
-
-\
-**Exclude and Include fields in the same query:**
+</CodeTab>
+<CodeTab>
 > When both `true` and `false` select options are present, all `false` options are ingored.
-
-If you include the `name` field and exclude the `_id` field, `_id` exclusion will be redundant, all fields apart from `name` would be excluded anyways.
-<CodeTabs items={["List query", "Get query"]}>
 ```typescript
 const result = await client.metaobjects.designer.list({
   fields: {
@@ -185,46 +199,31 @@ const result = await client.metaobjects.designer.get("gid://shopify/Metaobject/1
   name: true,
 });
 ```
+</CodeTab>
 </CodeTabs>
 
 ## Filters
 
 Tento supports all pecific filters what Shopify has, see [here](https://shopify.dev/docs/api/usage/search-syntax).  
-Especially for metaobjects querying Tento supports all Shopify [Metaobjects Query filters](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/metaobjects).
+For metaobjects querying Tento supports all Shopify [Metaobjects Query filters](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/metaobjects).
 
-#### eq
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
+<CodeTabs items={["eq", "not", "gt", "gte", "lt", "lte", "raw", "and", "or"]}>
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
-   displayName: "designer #1"
+    id: "1"
   },
 });
 ```
-
-#### not
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
-   displayName: {
-      $not: "designer #1"
+    id: {
+      $not: "1"
     }
   },
 });
 ```
-
-#### gt
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
@@ -234,12 +233,6 @@ const result = await client.metaobjects.designer.list({
   },
 });
 ```
-
-#### gte
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
@@ -249,12 +242,6 @@ const result = await client.metaobjects.designer.list({
   },
 });
 ```
-
-#### lt
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
@@ -264,12 +251,6 @@ const result = await client.metaobjects.designer.list({
   },
 });
 ```
-
-#### lte
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
@@ -279,42 +260,27 @@ const result = await client.metaobjects.designer.list({
   },
 });
 ```
-
-#### raw
-
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
-   $raw: "id:1"
+    $raw: "id:1"
   },
 });
 ```
-
-#### and
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: [
-      {
-        id: "1"
+    {
+      id: "1"
+    },
+    {
+      id: {
+        $lte: "2",
       },
-      {
-        id: {
-          $lte: "2",
-        },
-      },
-    ],
+    },
+  ],
 });
 ```
-
-#### or
-Supported fields to filter  
-|               |                                                 |
-| :------------ | :-----------------------------------            |
-| fields        | `displayName`, `handle`, `id`, `updatedAt`      |
 ```typescript
 const result = await client.metaobjects.designer.list({
   query: {
@@ -331,12 +297,25 @@ const result = await client.metaobjects.designer.list({
   },
 });
 ```
+</CodeTabs>
+<Callout collapsed="Supported fields">
+```ts
+const result = await client.metaobjects.designer.list({
+  query: {
+    id: "1",
+    displayName: "Designer #1",
+    handle: "designer-handle",
+    updatedAt: "2024-01-01",
+  },
+});
+```
+</Callout>
 
 ## Pagination
 
 Tento supports [Shopify pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
 
-#### first
+#### `first`
 
 Supported pagination options  
 | option        | default    | description                                          |
@@ -350,7 +329,7 @@ const result = await client.metaobjects.designer.list({
 });
 ```
 
-#### last
+#### `last`
 
 Supported pagination options  
 | option        | default    | description                                          |
@@ -373,15 +352,8 @@ Tento supports Shopify [Metaobjects query sort keys](https://shopify.dev/docs/ap
 Supported sort keys
 |               |                                                 |
 | :------------ | :-----------------------------------            |
-| keys     | `id`, `type`, `updated_at`, `display_name`           |
-```typescript
-const result = await client.metaobjects.designer.list({
-  sortKey: "id"
-});
-```
-<Callout type="info">
-You can control sort direction using `reverse` option. Default value is `false`.
-</Callout>
+| keys          | `id`, `type`, `updated_at`, `display_name`      |
+| `reverse`     | `true`, `false` (`false` as default)            |
 ```typescript
 const result = await client.metaobjects.designer.list({
   sortKey: "id",

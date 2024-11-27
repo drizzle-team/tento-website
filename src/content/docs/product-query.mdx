@@ -1,4 +1,5 @@
 import CodeTab from '@mdx/CodeTab.astro';
+import CodeTabs from '@mdx/CodeTabs.astro';
 import Callout from '@mdx/Callout.astro';
 
 # Tento Product Query
@@ -6,12 +7,27 @@ import Callout from '@mdx/Callout.astro';
 ## List
 Tento represents Shopify [Products query](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/products)
 
-<Callout type="info">
+<Callout type="warning">
 If you don't provide partial fields selection **Tento** will return all possible fields for **Product**
 </Callout>
 <CodeTab>
 ```typescript
-const result = await client.metaobjects.products.list();
+const result = await client.products.list();
+
+await client.products.list({
+  first: 10,
+  query: {
+    tag: "tento",
+  },
+});
+
+await client.products.list({
+  fields: {
+    id: true,
+    title: true,
+    metafields: true,
+  },
+});
 ```
 ```typescript
 // result type
@@ -47,22 +63,18 @@ const result: {
 </CodeTab>
 
 ## Partial fields select
-`fields` parameter lets you include or omit fields you want to get from Shopify.
-<Callout type="info">
-Tento performs partial selects on the query level, no additional data is transferred from the Shopify.
-</Callout>
+`fields` parameter lets you include or omit fields you want to get from Shopify, Tento performs partial selects on the query level, 
+no additional data is transferred from the Shopify.
 
-**Get including only with just `id`, `title`:**
+<CodeTabs items={["Include", "Exclude", "Both"]}>
 ```typescript
-const result = await client.metaobjects.products.list({
+const result = await client.products.list({
   fields: {
     id: true,
     title: true,
   },
 });
 ```
-\
-**Get excluding `id`, `handle`, `updatedAt`, `description`:**
 ```typescript
 const result = await client.products.list({
   fields: {
@@ -73,67 +85,41 @@ const result = await client.products.list({
   },
 });
 ```
-\
-**Exclude and Include fields in the same query:**
+<CodeTab>
 > When both `true` and `false` select options are present, all `false` options are ingored.
-
-If you include the `title` field and exclude the `id` field, `id` exclusion will be redundant, all fields apart from `title` would be excluded anyways.
 ```typescript
-const result = await client.metaobjects.products.list({
+const result = await client.products.list({
   fields: {
     id: false,
     title: true,
   },
 });
 ```
+</CodeTab>
+</CodeTabs>
 
 ## Filters
 
 Tento supports all pecific filters what Shopify has, see [here](https://shopify.dev/docs/api/usage/search-syntax).  
 Especially for products querying Tento supports all Shopify [Products Query filters](https://shopify.dev/docs/api/admin-graphql/2024-10/queries/products).
 
-#### eq
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
+<CodeTabs items={["eq", "not", "gt", "gte", "lt", "lte", "raw", "and", "or"]}>
 ```typescript
 const result = await client.products.list({
   query: {
-   title: "product #1"
+    id: "1"
   },
 });
 ```
-
-#### not
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
 ```typescript
 const result = await client.products.list({
   query: {
-   title: {
-      $not: "product #1"
+    id: {
+      $not: "1"
     }
   },
 });
 ```
-
-#### gt
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
 ```typescript
 const result = await client.products.list({
   query: {
@@ -143,15 +129,6 @@ const result = await client.products.list({
   },
 });
 ```
-
-#### gte
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
 ```typescript
 const result = await client.products.list({
   query: {
@@ -161,15 +138,6 @@ const result = await client.products.list({
   },
 });
 ```
-
-#### lt
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
 ```typescript
 const result = await client.products.list({
   query: {
@@ -179,15 +147,6 @@ const result = await client.products.list({
   },
 });
 ```
-
-#### lte
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
 ```typescript
 const result = await client.products.list({
   query: {
@@ -197,48 +156,27 @@ const result = await client.products.list({
   },
 });
 ```
-
-#### raw
-
 ```typescript
 const result = await client.products.list({
   query: {
-   $raw: "id:1"
+    $raw: "id: 1"
   },
 });
 ```
-
-#### and
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
 ```typescript
 const result = await client.products.list({
   query: [
-      {
-        id: "1"
+    {
+      id: "1"
+    },
+    {
+      id: {
+        $lte: "2",
       },
-      {
-        id: {
-          $lte: "2",
-        },
-      },
-    ],
+    },
+  ],
 });
 ```
-
-#### or
-Supported fields to filter  
-|               |                                                                                                                                |
-| :------------ | :-----------------------------------                                                                                           |
-| fields        | `default`, `barcode`, `bundles`, `categoryId`, `combinedListingRole`, `createdAt`, `deliveryProfileId`, `giftCard`, `handle`,  |
-|               | `hasOnlyComposites`, `hasOnlyDefaultVariant`, `hasVariantWithComponents`, `id`, `inventoryTotal`, `isPriceReduced`,            |
-|               | `outOfStockSomewhere`, `price`, `productConfigurationOwner`, `productType`, `publishedStatus`, `publishedAt`, `sku`, `status`, |
-|               | `tag`, `tagNot`, `title`, `updatedAt`, `vendor`                                                                                |
 ```typescript
 const result = await client.products.list({
   query: {
@@ -255,6 +193,43 @@ const result = await client.products.list({
   },
 });
 ```
+</CodeTabs>
+<Callout collapsed="Supported fields">
+```ts
+const result = await client.products.list({
+  query: {
+    id: "1",
+    default: "product",
+    barcode: "ABC-abc-1234",
+    bundles: true, // false
+    categoryId: "gid://shopify/TaxonomyCategory/1",
+    combinedListingRole: "PARENT", // CHILD
+    createdAt: "2024-01-01",
+    deliveryProfileId: "1",
+    giftCard: true, // false
+    handle: "product-handle",
+    hasOnlyComposites: true, // false
+    hasOnlyDefaultVariant: true, // false
+    hasVariantWithComponents: true, // false
+    inventoryTotal: 1,
+    isPriceReduced: true, // false
+    outOfStockSomewhere: true, // false
+    price: 1,
+    productConfigurationOwner: "product owner",
+    productType: "product type",
+    publishedStatus: "HIDDEN", // 'ONLINE_STORE_CHANNEL', 'PUBLISHED', 'UNPUBLISHED', 'VISIBLE', 'UNAVAILABLE', 'HIDDEN', 'INTENDED', 'VISIBLE'
+    publishedAt: "2024-01-01",
+    sku: "XYZ-12345",
+    status: "ACTIVE", // 'ARCHIVED', 'DRAFT'
+    tag: "my_tag",
+    tagNot: "my_tag",
+    title: "Product Title",
+    updatedAt: "2024-01-01",
+    vendor: "Product Vendor",
+  },
+});
+```
+</Callout>
 
 ## Pagination
 
@@ -298,14 +273,7 @@ Supported sort keys
 |               |                                                                                                                      |
 | :------------ | :-----------------------------------                                                                                 |
 | keys          | `id`, `created_at`, `inventory_total`, `product_type`, `published_at`, `relevance`, `title` ,`updated_at` , `vendor` |
-```typescript
-const result = await client.products.list({
-  sortKey: "id"
-});
-```
-<Callout type="info">
-You can control sort direction using `reverse` option. Default value is `false`.
-</Callout>
+| `reverse`     | `true`, `false` (`false` as default)                                                                                 |
 ```typescript
 const result = await client.products.list({
   sortKey: "id",

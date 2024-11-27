@@ -1,0 +1,78 @@
+import Prerequisites from "@mdx/Prerequisites.astro";
+import Npm from '@mdx/Npm.astro';
+
+# Quick start with Tento
+
+<Prerequisites>
+  - **@shopify/shopify-api** - package for access for the Shopify Admin API - [read here](https://www.npmjs.com/package/@shopify/shopify-api)
+  - **dotenv** - package for managing environment variables - [read here](https://www.npmjs.com/package/dotenv)
+  - **tsx** - package for running TypeScript files - [read here](https://tsx.is/)
+  - Get started with OAuth - [read here](/docs/get-started-with-oauth)
+</Prerequisites>
+
+#### Step 1 - Install dependencies
+<Npm>
+@drizzle-team/tento
+</Npm>
+
+#### Step 2 - Setup connection variables
+```plaintext copy
+SHOPIFY_ACCESS_TOKEN=
+SHOPIFY_SHOP_ID=
+```
+
+#### Step 3 - Declare schema file
+```typescript copy filename="src/db/schema.ts"
+import { metaobject } from '@drizzle-team/tento';
+
+export const designer = metaobject({
+  name: "Designer",
+  type: "designer",
+  fieldDefinitions: (f) => ({
+    name: f.singleLineTextField({
+      name: "Title",
+      required: true,
+      validations: (v) => [v.min(1), v.max(50)],
+    }),
+    description: f.multiLineTextField({
+      name: "Description",
+    }),
+    website: f.url({
+      name: "Website",
+    }),
+  }),
+});
+```
+
+#### Step 4 - Connect and Query the Shopify
+```typescript copy filename="src/index.ts"
+import 'dotenv/config';
+import '@shopify/shopify-api/adapters/web-api';
+import * as schema from './db/schema';
+import { createClient, tento } from '@drizzle-team/tento';
+
+const client = tento({
+  client: createClient({
+    shop: process.env.SHOPIFY_SHOP_ID!,
+    headers: {
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
+    },
+  }),
+  schema,
+});
+
+async function main() {
+  await client.applySchema();
+
+  const createdDesigner = await client.metaobjects.designer.insert({
+    name: "John",
+    description: "John is designer",
+    website: "https://drizzle.team/",
+  });
+  console.log("New designer created!");
+
+  const designers = await client.metaobjects.designer.list({
+    first: 50
+  });
+}
+```

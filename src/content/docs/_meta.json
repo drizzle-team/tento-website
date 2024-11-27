@@ -2,6 +2,7 @@
   "Meet Tento",
   ["get-started", "Get started"],
   ["get-started-with-oauth", "Get started with OAuth"],
+  ["quickstart", "Quickstart"],
   ["schema", "Schema"],
   ["migrations", "Migrations"],
 

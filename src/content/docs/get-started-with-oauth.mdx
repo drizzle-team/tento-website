@@ -12,6 +12,10 @@ import CodeTabs from '@mdx/CodeTabs.astro';
   - **dotenv** - package for managing environment variables - [read here](https://www.npmjs.com/package/dotenv/)
   - **tsx** - package for running TypeScript files - [read here](https://tsx.is/)
   - **ngrok** - tool for creating secure tunnels to localhost, ideal for testing webhooks - [read here](https://download.ngrok.com/)
+  - Shopify Application and developer Store - [read here](https://shopify.dev/docs/apps/build/scaffold-app/)
+  - Secret variables by Shopify official manual - [read here](https://help.shopify.com/en/manual/apps/app-types/custom-apps#get-the-api-credentials-for-a-custom-app)
+  - Shopify **Metaobject** knowledge instance - [read here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metaobject)
+  - Shopify **Metafield** knowledge instance - [read here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metafield)
 </Prerequisites>
 
 We will use `ngrok` tool to create secure tunnel to our `express` local server for this get started example.
@@ -31,17 +35,17 @@ SHOPIFY_SHOP=
 ```
 
 <Callout title='tips'>
-If you don't have a Shopify Application and developer store yet and want to create one for testing, you can use official Shopify guide (Make sure to set up [API scopes](https://shopify.dev/docs/api/usage/access-scopes) for your Shopify Application for `metaobjects`). 
-After you create Shopify Application you'll need to get your secret variables, you can use official Shopify manual for it.
-
-The official Shopify guide is available [here](https://shopify.dev/docs/apps/build/scaffold-app).  
-The official Shopify manual to get secrets [here](https://help.shopify.com/en/manual/apps/app-types/custom-apps#get-the-api-credentials-for-a-custom-app).
+Shopify [Api Scopes](https://shopify.dev/docs/api/usage/access-scopes) that used for this guide:  
+- `write_metaobject_definitions`  
+- `read_metaobject_definitions`  
+- `write_metaobjects`  
+- `read_metaobjects`  
 </Callout>
 
 #### Step 3 - Declare schema file
 Create a `schema.ts` file and declare your metaobjects and metafields schema:
 
-<Callout title='info'>
+<Callout title='info' type='warning'>
 As of now Tento only supports one schema file.
 </Callout>
 
@@ -74,12 +78,6 @@ export const designer = metaobject({
   }),
 });
 ```
-<Callout title='tips'>
-If you don't have knowledge about Shopify metaobjects and metafields yet, or you want to see full possibilities for those, you can study them on Shopify.
-
-Metaobjects [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metaobject).  
-Metafields [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metafield).
-</Callout>
 
 #### Step 4 - Start ngrok
 Start your **ngrok** tunnel to `localhost` using:

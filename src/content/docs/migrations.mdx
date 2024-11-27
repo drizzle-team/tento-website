@@ -16,8 +16,9 @@ those entities - you will need to do it via **migrations**.
 
 ## Overview
 <Prerequisites>
-- Get started with Tento - [read here](/docs/get-started)
-- Tento schema foundamentals - [read here](/docs/schema)
+- Get started - [read here](/docs/get-started)
+- Get started with OAuth - [read here](/docs/get-started-with-oauth)
+- Tento schema fundamentals - [read here](/docs/schema)
 </Prerequisites>
 
 **Tento** has a CLI tool for managing Shopify Metaobjects and Metafields schema definitions.\
@@ -29,12 +30,13 @@ tento push
 </Npx>
 |                                                      |                                                                                                                                                                    |
 | :--------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`tento pull`](/docs/migrations#pull)                | lets you pull (introspect) Shopify definitions schema, convert it to Tento schema and save it to your codebase, [see here](/docs/drizzle-kit-pull)                 |
-| [`tento push`](/docs/migrations#push)                | lets you push your Tento definitions schema directly to Shopify, [see here](/docs/drizzle-kit-push)                                                                |
+| [`tento pull`](/docs/migrations#pull)                | lets you pull (introspect) Shopify definitions schema, convert it to Tento schema and save it to your codebase, [see here](/docs/migrations#pull)                  |
+| [`tento push`](/docs/migrations#push)                | lets you push your Tento definitions schema directly to Shopify, [see here](/docs/migrations#push)                                                                 |
 
 ## tento.config.ts
 Tento migrations is configured through **tento.config.ts** configuration file.\
 It's required to provide `schemaPath`, `shop` and `X-Shopify-Access-Token` for Tento.
+<CodeTab>
 ```
 📦 <project root>
  ├ 📂 src
@@ -55,9 +57,7 @@ export default defineConfig({
   },
 });
 ```
-<Callout type="warning">
-To have understanding of what `SHOPIFY_SHOP_ID` and `SHOPIFY_ACCESS_TOKEN` variables represent go through Tento [Get started with OAuth](/docs/get-started-with-oauth).
-</Callout>
+</CodeTab>
 
 ## `pull`
 
@@ -175,12 +175,12 @@ export const designer = metaobject({
 
 Tento also supports `apply` and `remove` **schema** definitions using client.
 
-#### Apply
-
 <br></br>
 | option            | default      | values              | description                                                                                                                                                     |
 | :------------     | :----------  | :----------         | :-----------------------------------                                                                                                                            |
 | `unknownEntities` | `ignore`     | `ignore`, `remove`  | helps define the scope of **metaobjects** and **metafields** to be migrated, preventing unnecessary downloads and avoiding the deletion of other existing items |
+
+<CodeTabs items={["Apply", "Remove"]}>
 ```typescript copy
 import 'dotenv/config';
 import '@shopify/shopify-api/adapters/web-api';
@@ -208,17 +208,6 @@ async function main() {
 
 main();
 ```
-|                         |                                                                                                                                                                                                                                                               |
-| :---------------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------                                                                                            |
-| `ignore`                | means that only the **metaobjects** and **metafields** from your definitions **schema** will be processed.                                                                                                                                                    |
-| `delete`                | means that all **metaobjects** and **metafields** will be processed. If you select this option and run command, we will create/ update your **schema** in **Shopify** and remove all **metaobjects** and **metafields** that do not exist in your **schema**. |
-
-#### Remove
-
-<br></br>
-| option            | default      | values              | description                                                                                                                                                     |
-| :------------     | :----------  | :----------         | :-----------------------------------                                                                                                                            |
-| `unknownEntities` | `ignore`     | `ignore`, `remove`  | helps define the scope of **metaobjects** and **metafields** to be migrated, preventing unnecessary downloads and avoiding the deletion of other existing items |
 ```typescript copy
 import 'dotenv/config';
 import '@shopify/shopify-api/adapters/web-api';
@@ -246,6 +235,7 @@ async function main() {
 
 main();
 ```
+</CodeTabs>
 |                         |                                                                                                                                                                                                                                                               |
 | :---------------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------                                                                                            |
 | `ignore`                | means that only the **metaobjects** and **metafields** from your definitions **schema** will be processed.                                                                                                                                                    |

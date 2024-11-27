@@ -15,6 +15,10 @@ It also provides a CLI tool for two-way synchronization between your local schem
   - **@shopify/shopify-api** - package for access for the Shopify Admin API - [read here](https://www.npmjs.com/package/@shopify/shopify-api)
   - **dotenv** - package for managing environment variables - [read here](https://www.npmjs.com/package/dotenv)
   - **tsx** - package for running TypeScript files - [read here](https://tsx.is/)
+  - Shopify **Metaobject** knowledge instance - [read here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metaobject)
+  - Shopify **Metafield** knowledge instance - [read here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metafield)
+  - Get started with OAuth - [read here](/docs/get-started-with-oauth)
+  - Migrations `tento.config.ts` fundamentals - [read here](/docs/migrations#tentoconfigts)
 </Prerequisites>
 
 #### Step 1 - Install dependencies
@@ -28,12 +32,6 @@ Create a `.env` file in the root of your project and add your Shopify Access Tok
 SHOPIFY_ACCESS_TOKEN=
 SHOPIFY_SHOP_ID=
 ```
-
-<Callout title='tips'>
-If you don't have an active session with `accessToken` variable yet and want to create one for testing, you can use our guide Get started with OAuth.
-
-The Get started with OAuth guide is available [here](/docs/get-started-with-oauth).
-</Callout>
 
 #### Step 3 - Declare schema file
 Create a `schema.ts` file and declare your metaobjects and metafields schema:
@@ -71,12 +69,6 @@ export const designer = metaobject({
   }),
 });
 ```
-<Callout title='tips'>
-If you don't have knowledge about Shopify metaobjects and metafields yet, or you want to see full possibilities for those, you can study them on Shopify.
-
-Metaobjects [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metaobject).  
-Metafields [here](https://shopify.dev/docs/api/admin-graphql/2024-10/objects/Metafield).
-</Callout>
 
 #### Step 4 - Connect Tento client
 Create a `index.ts` file and initialize the connection:
